@@ -1,4 +1,4 @@
-console.info('Loaded Ad Astra Recipe Changes')
+console.info('Loaded Ad Astra Recipe Changes');
 
 ServerEvents.recipes(event => {
     // -------------------------------------------------------------
@@ -6,7 +6,7 @@ ServerEvents.recipes(event => {
     // -------------------------------------------------------------
     // 'event.remove' deletes any existing recipe that produces the
     // specified output. This ensures only our custom recipe works.
-    event.remove({ output: 'ad_astra:tier_7_rocket' })
+    event.remove({ output: 'ad_astra:tier_7_rocket' });
 
     // -------------------------------------------------------------
     // Step 2: Define a custom NASA Workbench recipe for the Tier 7 Rocket
@@ -18,6 +18,15 @@ ServerEvents.recipes(event => {
     // - ingredients: array of items/tags in the exact slot order
     // - result: the item produced by this recipe
     // - .id(): unique recipe identifier
+
+    // -------------------------------------------------------------
+    // Note about tags:
+    // The 'uranium_extendra' tag used below is a custom tag created 
+    // for this modpack to avoid conflicts with other mods.
+    // It is NOT a tag that exists natively in Ad Astra or Ad Extendra.
+    // Any item assigned to this tag can be used in the recipe slots
+    // marked as [Uranium].
+    // -------------------------------------------------------------
 
     // Visual representation of the NASA Workbench slot layout:
     // Each slot corresponds to an ingredient in the array below.
@@ -31,7 +40,7 @@ ServerEvents.recipes(event => {
     //
     // Legend:
     // - Rocket Nose Cone = ad_astra:rocket_nose_cone
-    // - Uranium = any item with tag ad_extendra:uranium_extendra
+    // - Uranium = any item with tag ad_extendra:uranium_extendra (custom tag)
     // - Rocket Fin = ad_astra:rocket_fin
     // - Uranium Tank = ad_extendra:uranium_tank
     // - Uranium Engine = ad_extendra:uranium_engine
@@ -68,5 +77,5 @@ ServerEvents.recipes(event => {
         result: { count: 1, id: 'ad_extendra:tier_7_rocket' }
     })
     // Unique ID for this recipe to prevent conflicts with other mods
-    .id('ad_extendra:sicklyfox/nasa_workbench/tier_7_rocket')
+    .id('ad_extendra:sicklyfox/nasa_workbench/tier_7_rocket');
 });
