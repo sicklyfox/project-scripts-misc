@@ -16,7 +16,7 @@ PlayerEvents.loggedIn(event => {
     .append(Text.of(`You seem to be Lost in the Woods`).green());
   player.tell(message)}
   else(!event.player.loggedIn)
-});
+})
 
 PlayerEvents.loggedIn(event =>{
     // Define the player as well as the username to the event
@@ -30,7 +30,7 @@ let serverannouncement = Text.of(`${username} `).yellow().bold()
     // We .append to add another text.of to change the color
   .append(Text.of(`has returned to the Woods`).green());
 server.tell(serverannouncement)
-});
+})
 
 PlayerEvents.loggedOut(event => {
     // Define the player as well as the username to the event
@@ -39,5 +39,5 @@ PlayerEvents.loggedOut(event => {
   let serverannouncement = Text.of(`${username} `).yellow().bold()
     // We .append to add another text.of to change the color
     .append(Text.of(`is dreaming of Bagels`).green());
-  server.tell(serverannouncement);
+  server.tell(serverannouncement)
 });
