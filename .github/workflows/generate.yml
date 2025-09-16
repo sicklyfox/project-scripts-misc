@@ -3,7 +3,7 @@ name: Generate Script List
 on:
   push:
     paths:
-      - 'scripts/**'
+      - 'kubejs_scripts/**'
   workflow_dispatch:
 
 jobs:
@@ -29,3 +29,5 @@ jobs:
           git add generated/scripts.js
           git commit -m "Update scripts list" || echo "No changes to commit"
           git push
+env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

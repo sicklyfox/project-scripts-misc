@@ -3,22 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Scripts</title>
+  <title>Scripts Page</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <h1>My Scripts</h1>
-    <ul id="script-list"></ul>
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <img src="discord_icon_tbg.png" alt="Server Icon" class="server-icon">
+    </div>
+    <ul id="script-list" class="folder-tree"></ul>
+    <div class="sidebar-footer">
+      <a href="https://discord.gg/Gm7fjxaD3h" target="_blank">
+        <img src="discord_link.png" alt="Join Discord" class="discord-footer-icon">
+      </a>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <pre id="script-content">Select a script from the sidebar to view its contents.</pre>
   </div>
 
   <script type="module">
     import scripts from './generated/scripts.js';
 
     const listEl = document.getElementById("script-list");
+    const contentEl = document.getElementById("script-content");
 
     scripts.forEach(script => {
-      const parts = script.split("/").slice(1); // remove top-level "scripts" folder
+      const parts = script.split("/").slice(1); // remove top-level "scripts"
       let currentUl = listEl;
 
       parts.forEach((part, index) => {
@@ -27,9 +39,15 @@
           const li = document.createElement("li");
           li.classList.add("file");
           const a = document.createElement("a");
-          a.href = script;
+          a.href = "#";
           a.textContent = part;
-          a.target = "_blank";
+          a.addEventListener("click", (e) => {
+            e.preventDefault();
+            fetch(script)
+              .then(res => res.text())
+              .then(text => contentEl.textContent = text)
+              .catch(err => contentEl.textContent = "Error loading file.");
+          });
           li.appendChild(a);
           currentUl.appendChild(li);
         } else {
@@ -43,17 +61,14 @@
             folderLi.classList.add("folder");
             folderLi.dataset.name = part;
 
-            // Folder label
             const label = document.createElement("span");
             label.textContent = part;
             label.classList.add("folder-label");
             folderLi.appendChild(label);
 
-            // Nested <ul>
             const nestedUl = document.createElement("ul");
             folderLi.appendChild(nestedUl);
 
-            // Toggle collapse on click
             label.addEventListener("click", () => {
               nestedUl.classList.toggle("collapsed");
             });
