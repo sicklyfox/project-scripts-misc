@@ -1,3 +1,11 @@
+pre.language-javascript, pre[class*="language-"] {
+  background: #18122B !important;
+  border-radius: 12px;
+  padding: 24px;
+  color: #e0e0e0;
+  box-shadow: 0 0 32px 0 #6a4cff22;
+  border: 2px solid var(--accent2);
+}
 
 /* Modern dark theme with shifting purple accent */
 :root {

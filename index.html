@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Scripts Page</title>
   <link rel="stylesheet" href="style.css">
+  <!-- Prism.js for syntax highlighting -->
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
 </head>
 <body>
   <div class="sidebar">
@@ -25,6 +27,15 @@
 
   <script type="module">
     import scripts from './generated/scripts.js';
+    // Prism.js loader
+    const prismScript = document.createElement('script');
+    prismScript.src = 'https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js';
+    prismScript.defer = true;
+    document.body.appendChild(prismScript);
+    const prismLangScript = document.createElement('script');
+    prismLangScript.src = 'https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-javascript.min.js';
+    prismLangScript.defer = true;
+    document.body.appendChild(prismLangScript);
 
     const listEl = document.getElementById("script-list");
     const contentEl = document.getElementById("script-content");
@@ -75,7 +86,14 @@
             e.preventDefault();
             fetch(baseUrl + value.__file)
               .then(res => res.ok ? res.text() : Promise.reject())
-              .then(text => contentEl.textContent = text)
+                .then(text => {
+                  // Wait for Prism to load
+                  if (window.Prism) {
+                    contentEl.innerHTML = `<pre class='language-javascript'><code class='language-javascript'>${Prism.highlight(text, Prism.languages.javascript, 'javascript')}</code></pre>`;
+                  } else {
+                    contentEl.textContent = text;
+                  }
+                })
               .catch(() => contentEl.textContent = "Error loading file.");
             if (selectedLi) selectedLi.classList.remove("selected");
             li.classList.add("selected");
