@@ -44,7 +44,7 @@
           a.textContent = part;
           a.addEventListener("click", (e) => {
             e.preventDefault();
-            fetch(`generated/scripts/${parts.join("/")}`)
+            fetch(`${window.location.origin}/project-scripts-misc/generated/scripts/${parts.join("/")}`)
               .then(res => res.text())
               .then(text => contentEl.textContent = text)
               .catch(err => contentEl.textContent = "Error loading file.");
