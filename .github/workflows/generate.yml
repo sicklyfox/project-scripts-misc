@@ -19,7 +19,7 @@ jobs:
           echo "const scripts = [" > generated/scripts.js
           find 1.20.1/kubejs_scripts -type f -name "*.js" | sort | while read file; do
             echo "  \"$file\"," >> generated/scripts.js
-            cp "$file" generated/scripts/
+            cp --parents "$file" generated/scripts/
           done
           echo "]" >> generated/scripts.js
           echo "export default scripts;" >> generated/scripts.js
