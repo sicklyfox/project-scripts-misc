@@ -29,60 +29,99 @@
     const listEl = document.getElementById("script-list");
     const contentEl = document.getElementById("script-content");
 
+    // Add search bar
+    const searchBar = document.createElement("input");
+    searchBar.type = "text";
+    searchBar.placeholder = "Search scripts...";
+    searchBar.className = "script-search";
+    listEl.parentNode.insertBefore(searchBar, listEl);
+
+    // Add breadcrumbs
+    const breadcrumbs = document.createElement("div");
+    breadcrumbs.className = "breadcrumbs";
+    contentEl.parentNode.insertBefore(breadcrumbs, contentEl);
+
     let selectedLi = null;
     const baseUrl = `${window.location.origin}/project-scripts-misc/generated/scripts/`;
-    scripts.forEach(script => {
-      const parts = script.split("/");
-      let currentUl = listEl;
 
-      parts.slice(1).forEach((part, index) => {
-        if (index === parts.length - 2) {
+    // Helper to build tree structure from script paths
+    function buildTree(paths) {
+      const root = {};
+      for (const path of paths) {
+        const parts = path.split("/");
+        let node = root;
+        for (const part of parts) {
+          if (!node[part]) node[part] = {};
+          node = node[part];
+        }
+        node.__file = path;
+      }
+      return root;
+    }
+
+    // Helper to render tree
+    function renderTree(node, parentUl, parentPath = []) {
+      Object.entries(node).forEach(([key, value]) => {
+        if (key === "__file") return;
+        if (value.__file) {
           // file
           const li = document.createElement("li");
           li.classList.add("file");
           const a = document.createElement("a");
           a.href = "#";
-          a.textContent = part;
+          a.textContent = key.length > 32 ? key.slice(0, 29) + "..." : key;
+          a.title = key;
           a.addEventListener("click", (e) => {
             e.preventDefault();
-            fetch(baseUrl + script)
-              .then(res => res.text())
+            fetch(baseUrl + value.__file)
+              .then(res => res.ok ? res.text() : Promise.reject())
               .then(text => contentEl.textContent = text)
-              .catch(err => contentEl.textContent = "Error loading file.");
+              .catch(() => contentEl.textContent = "Error loading file.");
             if (selectedLi) selectedLi.classList.remove("selected");
             li.classList.add("selected");
             selectedLi = li;
+            // Update breadcrumbs
+            breadcrumbs.innerHTML = parentPath.concat(key).map((p, i, arr) => {
+              if (i === arr.length - 1) return `<span>${p}</span>`;
+              return `<span>${p}</span> <span class='crumb-sep'>/</span>`;
+            }).join("");
           });
           li.appendChild(a);
-          currentUl.appendChild(li);
+          parentUl.appendChild(li);
         } else {
           // folder
-          let folderLi = Array.from(currentUl.children).find(
-            li => li.classList.contains("folder") && li.dataset.name === part
-          );
-
-          if (!folderLi) {
-            folderLi = document.createElement("li");
-            folderLi.classList.add("folder");
-            folderLi.dataset.name = part;
-
-            const label = document.createElement("span");
-            label.textContent = part;
-            label.classList.add("folder-label");
-            folderLi.appendChild(label);
-
-            const nestedUl = document.createElement("ul");
-            folderLi.appendChild(nestedUl);
-
-            label.addEventListener("click", () => {
-              nestedUl.classList.toggle("collapsed");
-            });
-
-            currentUl.appendChild(folderLi);
-          }
-          currentUl = folderLi.querySelector("ul");
+          const li = document.createElement("li");
+          li.classList.add("folder");
+          li.dataset.name = key;
+          const label = document.createElement("span");
+          label.textContent = key;
+          label.classList.add("folder-label");
+          li.appendChild(label);
+          const nestedUl = document.createElement("ul");
+          li.appendChild(nestedUl);
+          label.addEventListener("click", () => {
+            nestedUl.classList.toggle("collapsed");
+          });
+          parentUl.appendChild(li);
+          renderTree(value, nestedUl, parentPath.concat(key));
         }
       });
+    }
+
+    // Initial render
+    function renderSidebar(filter = "") {
+      listEl.innerHTML = "";
+      const tree = buildTree(
+        filter ? scripts.filter(s => s.toLowerCase().includes(filter.toLowerCase())) : scripts
+      );
+      renderTree(tree, listEl);
+    }
+
+    renderSidebar();
+
+    // Search functionality
+    searchBar.addEventListener("input", e => {
+      renderSidebar(e.target.value);
     });
   </script>
 </body>
