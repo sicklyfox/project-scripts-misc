@@ -27,9 +27,9 @@ body {
 }
 
 .sidebar {
-  width: 180px;
-  min-width: 180px;
-  max-width: 180px;
+  width: 250px;
+  min-width: 250px;
+  max-width: 250px;
   background: #231942;
   display: flex;
   flex-direction: column;
@@ -60,14 +60,16 @@ body {
 }
 
 .folder-tree {
-  max-width: 100%;
-  overflow-x: auto;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
   list-style: none;
   padding-left: 0;
   flex-grow: 1;
   margin-top: 6px;
-  font-size: 0.92rem;
+  font-size: 1.19rem;
   line-height: 1.2;
+  display: block;
 }
 
 li.folder {
@@ -120,8 +122,15 @@ li.folder:hover, li.file:hover {
   font-size: 0.9em;
 }
 
+li.folder > .folder-label.open::before {
+  content: "▼ ";
+}
+
 li ul {
-  padding-left: 12px;
+  padding-left: 18px;
+  display: block;
+  margin: 0;
+  position: static;
 }
 
 .main-content {
@@ -168,7 +177,7 @@ pre#script-content {
 }
 
 .discord-footer-icon {
-  width: 120px;
+  width: 90px;
   cursor: pointer;
   box-shadow: 0 0 16px 0 #a259ff44;
 }
@@ -270,12 +279,14 @@ li.folder {
   font-weight: 500;
   margin: 2px 0;
   border-left: 2px solid var(--accent2);
-  background: linear-gradient(90deg, #231942 90%, #6a4cff11 100%);
+  background: linear-gradient(90deg, #231942 98%, #6a4cff08 100%);
   font-size: 0.95em;
+  position: relative;
+  z-index: 1;
 }
 
 li.file {
-  padding-left: 16px;
+  padding-left: 18px;
   border-radius: 4px;
   margin-left: 0;
   margin-right: 0;
@@ -285,8 +296,10 @@ li.file {
   text-overflow: ellipsis;
   margin: 2px 0;
   border-left: 2px solid var(--accent);
-  background: linear-gradient(90deg, #231942 90%, #a259ff11 100%);
+  background: linear-gradient(90deg, #231942 98%, #a259ff08 100%);
   font-size: 0.93em;
+  position: relative;
+  z-index: 1;
 }
 
 li.folder:hover, li.file:hover {
