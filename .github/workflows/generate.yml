@@ -13,21 +13,23 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Generate script list
+      - name: Generate script list and copy scripts
         run: |
-          mkdir -p generated
-          echo "const scripts = " > generated/scripts.js
-          echo "[" >> generated/scripts.js
-          find scripts -type f -name "*.js" | sort | sed 's/^/  "/;s/$/",/' >> generated/scripts.js
+          mkdir -p generated/scripts
+          echo "const scripts = [" > generated/scripts.js
+          find kubejs_scripts -type f -name "*.js" | sort | while read file; do
+            echo "  \"$file\"," >> generated/scripts.js
+            cp "$file" generated/scripts/
+          done
           echo "]" >> generated/scripts.js
           echo "export default scripts;" >> generated/scripts.js
 
-      - name: Commit generated scripts list
+      - name: Commit generated scripts and list
         run: |
           git config --local user.name "github-actions"
           git config --local user.email "github-actions@github.com"
-          git add generated/scripts.js
-          git commit -m "Update scripts list" || echo "No changes to commit"
+          git add generated/scripts.js generated/scripts/
+          git commit -m "Update scripts list and public scripts" || echo "No changes to commit"
           git push
 env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

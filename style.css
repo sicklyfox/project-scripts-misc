@@ -1,3 +1,18 @@
+/* Highlight selected script */
+.file.selected > a {
+  background: #4fc3f7;
+  color: #1e1e2f;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+/* Improve code readability */
+pre#script-content {
+  font-family: 'Fira Mono', 'Consolas', 'Menlo', 'Monaco', monospace;
+  font-size: 1rem;
+  line-height: 1.5;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
 body {
   font-family: Arial, sans-serif;
   background: #1e1e2f;

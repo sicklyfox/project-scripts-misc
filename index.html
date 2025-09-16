@@ -29,8 +29,9 @@
     const listEl = document.getElementById("script-list");
     const contentEl = document.getElementById("script-content");
 
+    let selectedLi = null;
     scripts.forEach(script => {
-      const parts = script.split("/").slice(1); // remove top-level "scripts"
+      const parts = script.split("/").slice(1); // remove top-level "kubejs_scripts"
       let currentUl = listEl;
 
       parts.forEach((part, index) => {
@@ -43,10 +44,13 @@
           a.textContent = part;
           a.addEventListener("click", (e) => {
             e.preventDefault();
-            fetch(script)
+            fetch(`generated/scripts/${parts.join("/")}`)
               .then(res => res.text())
               .then(text => contentEl.textContent = text)
               .catch(err => contentEl.textContent = "Error loading file.");
+            if (selectedLi) selectedLi.classList.remove("selected");
+            li.classList.add("selected");
+            selectedLi = li;
           });
           li.appendChild(a);
           currentUl.appendChild(li);
