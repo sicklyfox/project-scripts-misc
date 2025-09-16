@@ -49,6 +49,9 @@ body {
 }
 
 .folder-tree {
+  /* Prevent overflow and streamline look */
+  max-width: 100%;
+  overflow-x: hidden;
   list-style: none;
   padding-left: 0;
   flex-grow: 1;
@@ -56,6 +59,11 @@ body {
 }
 
 li.folder {
+  padding: 4px 0 4px 8px;
+  border-radius: 6px;
+  margin-left: 0;
+  margin-right: 0;
+  box-sizing: border-box;
   font-weight: bold;
   margin: 5px 0;
   border-left: 3px solid var(--accent2);
@@ -63,6 +71,14 @@ li.folder {
 }
 
 li.file {
+  padding-left: 24px;
+  border-radius: 6px;
+  margin-left: 0;
+  margin-right: 0;
+  box-sizing: border-box;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   padding-left: 20px;
   margin: 3px 0;
   border-left: 2px solid var(--accent);
@@ -75,6 +91,11 @@ li.folder:hover, li.file:hover {
 }
 
 a {
+  display: inline-block;
+  max-width: 180px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   text-decoration: none;
   color: var(--accent);
   transition: color 0.2s;
