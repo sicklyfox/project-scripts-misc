@@ -1,3 +1,7 @@
+// sicklyfox.Dev - KubeJS Script
+// ad_astra/nasa_workbench_recipe_changes.js
+// Version 1.0
+// Description: Custom recipe changes for Ad Astra mod to improve gameplay balance/mod compat.
 console.info('Loaded Ad Astra Recipe Changes');
 
 ServerEvents.recipes(event => {

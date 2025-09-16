@@ -1,43 +1,60 @@
-console.info('Loaded Starterkit')
+// sicklyfox.dev Starterkit Script
+// starterkit_ex.js
+// Version 1.0
+// Description: Gives players a starter kit on first world join and welcomes them back on subsequent joins.
+console.info('Loaded Starterkit scripts')
 
 PlayerEvents.loggedIn(event => {
-    /* Checks if the player already has the 'new_join' stage and if not it adds it, effectively only running
-    this once on first world join.*/
-  if (!event.player.stages.has('new_join')) {event.player.stages.add('new_join')
-    // Equips player with starter equipment
-    event.server.runCommandSilent(`give ${event.entity.username} minecraft:wooden_sword`)
-    event.server.runCommandSilent(`give ${event.entity.username} minecraft:wooden_axe`)
-    event.server.runCommandSilent(`give ${event.entity.username} minecraft:wooden_shovel`)
-    event.server.runCommandSilent(`give ${event.entity.username} camping:wanderer_backpack`)
+    // First join check
+    if (!event.player.stages.has('new_join')) {
+        event.player.stages.add('new_join')
+
+        const { player, server, player: { username } } = event
+
+        // Starter items (non-armor)
+        const starterItems = [
+            'minecraft:wooden_sword',
+            'minecraft:wooden_axe',
+            'minecraft:wooden_shovel',
+            'camping:wanderer_backpack'
+        ]
+
+        // Give non-armor items
+        starterItems.forEach(item => {
+            server.runCommandSilent(`give ${username} ${item}`)
+        })
+
+        // Equip leather armor
+        player.inventory.armor.helmet = Item.of('minecraft:leather_helmet')
+        player.inventory.armor.chestplate = Item.of('minecraft:leather_chestplate')
+        player.inventory.armor.leggings = Item.of('minecraft:leather_leggings')
+        player.inventory.armor.boots = Item.of('minecraft:leather_boots')
+
+        // First join greeting
+        let message = Text.of("Hello, ").green()
+            .append(Text.of(`${username}. `).yellow().bold())
+            .append(Text.of(`You seem to be Lost in the Woods`).green());
+        player.tell(message)
+    }
+})
+
+// Returning players greeting
+PlayerEvents.loggedIn(event => {
     const { player, server, player: { username } } = event
-    // Gives player a greeting on first world join
-  let message = Text.of("Hello, ").green()
-    .append(Text.of(`${username}. `).yellow().bold())
-    .append(Text.of(`You seem to be Lost in the Woods`).green());
-  player.tell(message)}
-  else(!event.player.loggedIn)
+    let message = Text.of("Hello, ").green()
+        .append(Text.of(`${username}. `).yellow().bold())
+        .append(Text.of(`Welcome back to the Woods`).green());
+    player.tell(message)
+
+    let serverannouncement = Text.of(`${username} `).yellow().bold()
+        .append(Text.of(`has returned to the Woods`).green());
+    server.tell(serverannouncement)
 })
 
-PlayerEvents.loggedIn(event =>{
-    // Define the player as well as the username to the event
-const { player, server, player: { username } } = event
-let message = Text.of("Hello, ").green()
-  .append(Text.of(`${username}. `).yellow().bold())
-  .append(Text.of(`Welcome back to the Woods`).green());
-player.tell(message);
-    // This runs every time a player joins
-let serverannouncement = Text.of(`${username} `).yellow().bold()
-    // We .append to add another text.of to change the color
-  .append(Text.of(`has returned to the Woods`).green());
-server.tell(serverannouncement)
-})
-
+// Player logout announcement
 PlayerEvents.loggedOut(event => {
-    // Define the player as well as the username to the event
-  const { player, server, player: { username } } = event
-    // Tells server the player left
-  let serverannouncement = Text.of(`${username} `).yellow().bold()
-    // We .append to add another text.of to change the color
-    .append(Text.of(`is dreaming of Bagels`).green());
-  server.tell(serverannouncement)
-});
+    const { server, player: { username } } = event
+    let serverannouncement = Text.of(`${username} `).yellow().bold()
+        .append(Text.of(`is dreaming of Bagels`).green())
+    server.tell(serverannouncement)
+})

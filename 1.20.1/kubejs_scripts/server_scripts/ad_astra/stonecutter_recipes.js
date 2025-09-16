@@ -1,4 +1,9 @@
-console.info('Loaded Ad Astra Stonecutter Recipes')
+// sicklyfox.Dev Ad Astra Stonecutter Recipes Script
+// stonecutter_recipes.js
+// Version 1.1
+/* Description: Adds stonecutter recipes for Ad Astra and Ad Extendra metal blocks and their variants.
+                Recipes only load if the corresponding mod is installed. */
+console.info('Loaded Ad Astra/Ad Extendra Stonecutter Recipes')
 
 ServerEvents.recipes(event => {
     const metals = [
@@ -7,6 +12,11 @@ ServerEvents.recipes(event => {
     ]
 
     metals.forEach(group => {
+        if (!Platform.isLoaded(group.mod)) {
+            console.info(`Skipping recipes for ${group.mod} because it is not loaded.`)
+            return // Skip this mod entirely
+        }
+
         group.types.forEach(metal => {
             const mod = group.mod
             const pillar = `${mod}:${metal}_pillar`

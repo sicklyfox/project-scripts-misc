@@ -1,4 +1,7 @@
-
+// sicklyfox.Dev - KubeJS Script
+// loot_table_modifications.js
+// Version: 1.0
+// Description: Modifies loot tables for grass to add custom drops when using specific tools.
 
 // Farmers Delight - Straw from Grass with Knives
 /* This script modifies loot tables to add a chance of dropping straw 

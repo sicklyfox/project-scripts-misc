@@ -1,3 +1,7 @@
+//sicklyfox.Dev - KubeJS Script
+// tags/item_tags.js
+// Version: 1.0
+// Description: Custom item tags for various mods and items.
 console.info('Loaded Item Tags')
 
 ServerEvents.tags('item', event => {

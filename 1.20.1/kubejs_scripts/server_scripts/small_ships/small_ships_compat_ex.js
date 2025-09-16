@@ -1,5 +1,10 @@
+// sicklyfox.Dev - KubeJS Script
+// small_ships_compat_ex.js
+// Version: 1.0
+/* Description: Custom recipes for Small Ships mod to improve compatibility with other mods.
+                This script is only useful if you have Small Ships mod installed.*/
 console.info('Loaded Small Ships Recipe Changes')
-
+/* Note: #forge:ropes tag is created in tags/item_tags.js Having a custom tag allows adding mod ropes without editing this script.*/
 // Main event for handling recipes in KubeJS
 ServerEvents.recipes(event => {
   

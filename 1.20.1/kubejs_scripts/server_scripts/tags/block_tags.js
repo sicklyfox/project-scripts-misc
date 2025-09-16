@@ -1,3 +1,7 @@
+// sicklyfox.Dev - KubeJS Script
+// tags/block_tags.js
+// Version: 1.0
+// Description: Custom block tags for various mods and blocks.
 // Tags are groups of blocks/items that mods can check for, instead of hardcoding specific IDs.
 // Example: A recipe could require anything tagged as "forge:grass" instead of just "minecraft:grass".
 console.info('Loaded Block Tags')

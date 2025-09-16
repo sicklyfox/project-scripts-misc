@@ -1,5 +1,7 @@
-// This script lowers the durability of all stone tools in Minecraft.
-// It runs when items are being modified by KubeJS.
+// sicklyfox.Dev Weaker Stone Tools Script
+// weaker_stone_tools.js
+// Version 1.0
+// Description: Reduces the durability of all stone tools to make them wear out faster.
 
 ItemEvents.modification(event => {
   // Grab all items that belong to the "minecraft:stone_tools" tag.

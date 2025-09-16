@@ -1,10 +1,12 @@
 /* ===============================================
-   Ad Astra Stonecutter Recipes for KubeJS 1.20.1 Forge
+   Ad Astra & Ad Extendra Stonecutter Recipes for KubeJS 1.20.1 Forge
    ===============================================
 
    This will print a message to the console when the script loads
-   Useful for confirming that the script is active*/
-console.info('Loaded Ad Astra Stonecutter Recipes')
+   Useful for confirming that the script is active
+   Recipes will only be added if the corresponding mod is installed.
+*/
+console.info('Loaded Ad Astra/Ad Extendra Stonecutter Recipes')
 
 // Main event handler: listens for recipe registration events
 // The "event" parameter gives us access to recipe functions like stonecutting
@@ -27,6 +29,12 @@ ServerEvents.recipes(event => {
        ===============================================*/
     metals.forEach(group => {
 
+        // Only create recipes if the mod is loaded
+        if (!Platform.isLoaded(group.mod)) {
+            console.info(`Skipping stonecutter recipes for ${group.mod} because it is not installed.`)
+            return
+        }
+
         // Loop through each individual metal type
         group.types.forEach(metal => {
 
@@ -46,16 +54,12 @@ ServerEvents.recipes(event => {
                1. Plating -> Other Variants
                Stonecutting can convert a block into other variants
                ===============================================*/
-            // Pillar -> Plating
             event.stonecutting(pillar, plating)
                 .id(`${mod}:stonecutting/bagelsiege/${metal}_pillar_to_${metal}_plating`)
-            // Glowing Pillar -> Plating
             event.stonecutting(glowing, plating)
                 .id(`${mod}:stonecutting/bagelsiege/glowing_${metal}_pillar_to_${metal}_plating`)
-            // Slabs -> Plating
             event.stonecutting(slab, plating)
                 .id(`${mod}:stonecutting/bagelsiege/${metal}_plating_to_${metal}_plating_slab`)
-            // Stairs -> Plating
             event.stonecutting(stairs, plating)
                 .id(`${mod}:stonecutting/bagelsiege/${metal}_plating_to_${metal}_plating_stairs`)
 
@@ -63,20 +67,16 @@ ServerEvents.recipes(event => {
                2. Pillar -> Plating / Glowing
                Stonecutting in the opposite direction
                ===============================================*/
-            // Plating -> Pillar
             event.stonecutting(plating, pillar)
                 .id(`${mod}:stonecutting/${metal}_plating_to_${metal}_pillar`)
-            // Glowing Pillar -> Pillar
             event.stonecutting(glowing, pillar)
                 .id(`${mod}:stonecutting/glowing_${metal}_pillar_to_${metal}_pillar`)
 
             /* ===============================================
                3. Glowing Pillar -> Other Variants
                ===============================================*/
-            // Pillar -> Glowing Pillar
             event.stonecutting(pillar, glowing)
                 .id(`${mod}:stonecutting/${metal}_pillar_to_glowing_${metal}_pillar`)
-            // Plating -> Glowing Pillar
             event.stonecutting(plating, glowing)
                 .id(`${mod}:stonecutting/glowing_${metal}_pillar_to_${metal}_plating`)
 
@@ -89,22 +89,16 @@ ServerEvents.recipes(event => {
 
                 const marked = `${mod}:marked_${metal}_pillar` // Define the marked pillar
 
-                // Marked -> Pillar
                 event.stonecutting(marked, pillar)
                     .id(`${mod}:stonecutting/marked_${metal}_pillar_to_${metal}_pillar`)
-                // Glowing -> Marked
                 event.stonecutting(glowing, marked)
                     .id(`${mod}:stonecutting/glowing_${metal}_pillar_to_marked_${metal}_pillar`)
-                // Pillar -> Marked
                 event.stonecutting(pillar, marked)
                     .id(`${mod}:stonecutting/${metal}_pillar_to_marked_${metal}_pillar`)
-                // Plating -> Marked
                 event.stonecutting(plating, marked)
                     .id(`${mod}:stonecutting/marked_${metal}_pillar_to_${metal}_plating`)
-                // Marked -> Plating
                 event.stonecutting(marked, plating)
                     .id(`${mod}:stonecutting/${metal}_plating_to_marked_${metal}_pillar`)
-                // Marked -> Glowing
                 event.stonecutting(marked, glowing)
                     .id(`${mod}:stonecutting/marked_${metal}_pillar_to_glowing_${metal}_pillar`)
             }
@@ -115,7 +109,9 @@ ServerEvents.recipes(event => {
 
 /* ===============================================
    Stonecutting Conversion Diagram (per metal)
-   
+   ===============================================
+   Recipes are only registered if the corresponding mod is installed.
+
              +-------------------+
              |   Plating Block   |
              +-------------------+
@@ -137,4 +133,4 @@ ServerEvents.recipes(event => {
    +-------------------+
    |  Marked Pillar    |
    +-------------------+
-   ===============================================*/
+*/

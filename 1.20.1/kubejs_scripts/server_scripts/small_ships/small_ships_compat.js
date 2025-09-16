@@ -1,3 +1,8 @@
+// sicklyfox.Dev - KubeJS Script
+// small_ships_compat.js
+// Version: 1.0
+/* Description: Custom recipes for Small Ships mod to improve compatibility with other mods.
+                This script is only useful if you have Small Ships mod installed.*/
 console.info('Loaded Small Ships Recipe Changes')
 
 ServerEvents.recipes(event => {
