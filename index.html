@@ -23,41 +23,44 @@
   </div>
 
   <div class="main-content" id="main-content">
+    <div class="breadcrumbs"></div>
     <pre id="script-content">Select a script from the sidebar to view its contents.</pre>
   </div>
 
   <script type="module">
     import scripts from './generated/scripts.js';
+
     // Prism.js loader
     const prismScript = document.createElement('script');
     prismScript.src = 'https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js';
     prismScript.defer = true;
     document.body.appendChild(prismScript);
+
     const prismLangScript = document.createElement('script');
     prismLangScript.src = 'https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-javascript.min.js';
     prismLangScript.defer = true;
     document.body.appendChild(prismLangScript);
 
-  const listEl = document.getElementById("script-list");
-  const contentEl = document.getElementById("script-content");
-  const sidebar = document.getElementById("sidebar");
-  const mainContent = document.getElementById("main-content");
-  const sidebarToggle = document.getElementById("sidebar-toggle");
+    const listEl = document.getElementById("script-list");
+    const contentEl = document.getElementById("script-content");
+    const sidebar = document.getElementById("sidebar");
+    const mainContent = document.getElementById("main-content");
+    const sidebarToggle = document.getElementById("sidebar-toggle");
+    const breadcrumbs = document.querySelector(".breadcrumbs");
+
     // Sidebar expand/contract button
     let sidebarExpanded = true;
     sidebarToggle.addEventListener("click", () => {
       sidebarExpanded = !sidebarExpanded;
+      sidebar.classList.toggle("collapsed", !sidebarExpanded);
       if (sidebarExpanded) {
-        sidebar.style.width = "320px";
         sidebarToggle.textContent = "⮞";
         mainContent.style.marginLeft = "";
       } else {
-        sidebar.style.width = "56px";
         sidebarToggle.textContent = "⮜";
         mainContent.style.marginLeft = "56px";
       }
     });
-
 
     // Add search bar
     const searchBar = document.createElement("input");
@@ -66,15 +69,10 @@
     searchBar.className = "script-search";
     listEl.parentNode.insertBefore(searchBar, listEl);
 
-    // Add breadcrumbs
-    const breadcrumbs = document.createElement("div");
-    breadcrumbs.className = "breadcrumbs";
-    contentEl.parentNode.insertBefore(breadcrumbs, contentEl);
-
     let selectedLi = null;
     const baseUrl = `${window.location.origin}/project-scripts-misc/generated/scripts/`;
 
-    // Helper to build tree structure from script paths
+    // Build tree structure
     function buildTree(paths) {
       const root = {};
       for (const path of paths) {
@@ -89,7 +87,7 @@
       return root;
     }
 
-    // Helper to render tree
+    // Render tree
     function renderTree(node, parentUl, parentPath = []) {
       Object.entries(node).forEach(([key, value]) => {
         if (key === "__file") return;
@@ -101,23 +99,22 @@
           a.href = "#";
           a.textContent = key.length > 32 ? key.slice(0, 29) + "..." : key;
           a.title = key;
+          a.dataset.name = key; // for tooltip
           a.addEventListener("click", (e) => {
             e.preventDefault();
             fetch(baseUrl + value.__file)
               .then(res => res.ok ? res.text() : Promise.reject())
-                .then(text => {
-                  // Wait for Prism to load
-                  if (window.Prism) {
-                    contentEl.innerHTML = `<pre class='language-javascript'><code class='language-javascript'>${Prism.highlight(text, Prism.languages.javascript, 'javascript')}</code></pre>`;
-                  } else {
-                    contentEl.textContent = text;
-                  }
-                })
+              .then(text => {
+                if (window.Prism) {
+                  contentEl.innerHTML = `<pre class='language-javascript'><code class='language-javascript'>${Prism.highlight(text, Prism.languages.javascript, 'javascript')}</code></pre>`;
+                } else {
+                  contentEl.textContent = text;
+                }
+              })
               .catch(() => contentEl.textContent = "Error loading file.");
             if (selectedLi) selectedLi.classList.remove("selected");
             li.classList.add("selected");
             selectedLi = li;
-            // Update breadcrumbs
             breadcrumbs.innerHTML = parentPath.concat(key).map((p, i, arr) => {
               if (i === arr.length - 1) return `<span>${p}</span>`;
               return `<span>${p}</span> <span class='crumb-sep'>/</span>`;
@@ -133,11 +130,13 @@
           const label = document.createElement("span");
           label.textContent = key;
           label.classList.add("folder-label");
+          label.dataset.name = key; // for tooltip
           li.appendChild(label);
           const nestedUl = document.createElement("ul");
           li.appendChild(nestedUl);
           label.addEventListener("click", () => {
             nestedUl.classList.toggle("collapsed");
+            label.classList.toggle("open");
           });
           parentUl.appendChild(li);
           renderTree(value, nestedUl, parentPath.concat(key));
@@ -153,10 +152,9 @@
       );
       renderTree(tree, listEl);
     }
-
     renderSidebar();
 
-    // Search functionality
+    // Search
     searchBar.addEventListener("input", e => {
       renderSidebar(e.target.value);
     });
