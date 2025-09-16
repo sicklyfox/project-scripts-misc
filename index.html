@@ -9,9 +9,10 @@
   <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
 </head>
 <body>
-  <div class="sidebar">
+  <div class="sidebar" id="sidebar">
+    <button id="sidebar-toggle" aria-label="Toggle sidebar" style="width:100%;margin-bottom:8px;">⮞</button>
     <div class="sidebar-header">
-  <img src="assets/discord-icon-tbg.png" alt="Discord Server" class="server-icon">
+      <img src="assets/discord-icon-tbg.png" alt="Discord Server" class="server-icon">
     </div>
     <ul id="script-list" class="folder-tree"></ul>
     <div class="sidebar-footer">
@@ -21,7 +22,7 @@
     </div>
   </div>
 
-  <div class="main-content">
+  <div class="main-content" id="main-content">
     <pre id="script-content">Select a script from the sidebar to view its contents.</pre>
   </div>
 
@@ -37,8 +38,26 @@
     prismLangScript.defer = true;
     document.body.appendChild(prismLangScript);
 
-    const listEl = document.getElementById("script-list");
-    const contentEl = document.getElementById("script-content");
+  const listEl = document.getElementById("script-list");
+  const contentEl = document.getElementById("script-content");
+  const sidebar = document.getElementById("sidebar");
+  const mainContent = document.getElementById("main-content");
+  const sidebarToggle = document.getElementById("sidebar-toggle");
+    // Sidebar expand/contract button
+    let sidebarExpanded = true;
+    sidebarToggle.addEventListener("click", () => {
+      sidebarExpanded = !sidebarExpanded;
+      if (sidebarExpanded) {
+        sidebar.style.width = "320px";
+        sidebarToggle.textContent = "⮞";
+        mainContent.style.marginLeft = "";
+      } else {
+        sidebar.style.width = "56px";
+        sidebarToggle.textContent = "⮜";
+        mainContent.style.marginLeft = "56px";
+      }
+    });
+
 
     // Add search bar
     const searchBar = document.createElement("input");

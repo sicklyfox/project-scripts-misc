@@ -1,3 +1,36 @@
+@media (max-width: 700px) {
+  .sidebar {
+    width: 100vw;
+    min-width: 0;
+    max-width: 100vw;
+    height: auto;
+    position: static;
+    border-right: none;
+    border-bottom: 2px solid var(--accent2);
+    flex-direction: row;
+    padding: 8px 4px;
+    z-index: 2;
+  }
+  .sidebar-header {
+    margin-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+    flex: 0 0 auto;
+  }
+  .folder-tree {
+    font-size: calc(1rem - 2pt);
+    margin-top: 0;
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+  .main-content {
+    padding: 8px 4vw;
+  }
+  pre#script-content {
+    font-size: 0.95rem;
+    padding: 12px;
+  }
+}
 pre.language-javascript, pre[class*="language-"] {
   background: #18122B !important;
   border-radius: 12px;
@@ -27,9 +60,9 @@ body {
 }
 
 .sidebar {
-  width: 250px;
-  min-width: 250px;
-  max-width: 250px;
+  width: 320px;
+  min-width: 320px;
+  max-width: 320px;
   background: #231942;
   display: flex;
   flex-direction: column;
@@ -50,8 +83,9 @@ body {
 }
 
 .server-icon {
-  width: 120px;
-  height: 120px;
+  width: 100%;
+  max-width: 120px;
+  height: auto;
   border-radius: 50%;
   display: block;
   margin: 0 auto;
@@ -67,7 +101,7 @@ body {
   padding-left: 0;
   flex-grow: 1;
   margin-top: 6px;
-  font-size: 1.19rem;
+  font-size: calc(1rem - 0.5pt);
   line-height: 1.2;
   display: block;
 }
@@ -126,7 +160,9 @@ li.folder > .folder-label.open::before {
   content: "▼ ";
 }
 
-li ul {
+
+li ul.collapsed {
+  display: none;
   padding-left: 18px;
   display: block;
   margin: 0;
@@ -177,7 +213,9 @@ pre#script-content {
 }
 
 .discord-footer-icon {
-  width: 90px;
+  width: 100%;
+  max-width: 90px;
+  height: auto;
   cursor: pointer;
   box-shadow: 0 0 16px 0 #a259ff44;
 }
