@@ -1,8 +1,14 @@
+
+
+// Farmers Delight - Straw from Grass with Knives
+/* This script modifies loot tables to add a chance of dropping straw 
+when breaking grass blocks with knives of various materials.*/
 LootJS.modifiers(event => {
     // Map material to drop chance
     const materialChances = {
         "wooden": 0.02,
-        "stone": 0.03,
+        "flint" : 0.03,
+        "stone": 0.04,
         "iron": 0.05,
         "diamond": 0.07,
         "netherite": 0.10
@@ -23,6 +29,6 @@ LootJS.modifiers(event => {
                 }
             }
 
-            return { chance: chance, loot: "farmersdelight:straw" };
+            return { chance: chance, loot: "farmersdelight:straw" }
         })
 })

@@ -1,4 +1,4 @@
-console.info('Loaded Login scripts')
+console.info('Loaded Starterkit')
 
 PlayerEvents.loggedIn(event => {
     // Checks if the player already has the 'new_join' stage and if not it adds it, effectively only running
@@ -8,7 +8,6 @@ PlayerEvents.loggedIn(event => {
     event.server.runCommandSilent(`give ${event.entity.username} minecraft:wooden_sword`)
     event.server.runCommandSilent(`give ${event.entity.username} minecraft:wooden_axe`)
     event.server.runCommandSilent(`give ${event.entity.username} minecraft:wooden_shovel`)
-    event.server.runCommandSilent(`give ${event.entity.username} camping:wanderer_backpack`)
     const { player, server, player: { username } } = event
     // Gives player a greeting on first world join
   let message = Text.of("Hello, ").green()

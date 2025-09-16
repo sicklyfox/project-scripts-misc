@@ -1,8 +1,8 @@
-console.info('Loaded Login scripts')
+console.info('Loaded Starterkit')
 
 PlayerEvents.loggedIn(event => {
-    // Checks if the player already has the 'new_join' stage and if not it adds it, effectively only running
-    // this once on first world join.
+    /* Checks if the player already has the 'new_join' stage and if not it adds it, effectively only running
+    this once on first world join.*/
   if (!event.player.stages.has('new_join')) {event.player.stages.add('new_join')
     // Equips player with starter equipment
     event.server.runCommandSilent(`give ${event.entity.username} minecraft:wooden_sword`)

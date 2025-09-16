@@ -3,7 +3,7 @@ console.info('Loaded Ad Astra Recipe Changes')
 ServerEvents.recipes(event => {
     // Remove the original Tier 7 Rocket recipe
     event.remove({ output: 'ad_astra:tier_7_rocket' })
-
+            console.info('Removed default Tier 7 Rocket recipe')
     // Custom NASA Workbench Recipe for Tier 7 Rocket
     event.custom({
         type: 'ad_astra:nasa_workbench',
@@ -36,4 +36,5 @@ ServerEvents.recipes(event => {
         ],
         result: { count: 1, id: 'ad_extendra:tier_7_rocket' }
     }).id('ad_extendra:sicklyfox/nasa_workbench/tier_7_rocket')
+    console.info('Added custom Tier 7 Rocket recipe')
 })

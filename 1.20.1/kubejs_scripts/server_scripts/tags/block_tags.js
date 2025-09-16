@@ -27,6 +27,7 @@ ServerEvents.tags('block', event => {
         if (Block.exists(id)) {
             // If the block exists, safely add it to the "forge:grass" tag.
             event.add("forge:grass", id)
+            console.info(`[Tag Added] Block added to forge:grass: ${id}`)
         } else {
             // If the block doesn’t exist, we skip it and log a message for debugging.
             // This makes the script *mod-friendly*: you can run it with or without

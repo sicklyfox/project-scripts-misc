@@ -3,16 +3,16 @@ console.info('Loaded Small Ships Recipe Changes')
 // Main event for handling recipes in KubeJS
 ServerEvents.recipes(event => {
   
-  // === Step 1: Define all wood types used for ships ===
+  /* === Step 1: Define all wood types used for ships ===*/
   const woodTypes = [
     'oak', 'spruce', 'birch', 'jungle', 
     'acacia', 'cherry', 'dark_oak', 'mangrove', 'bamboo'
   ]
 
-  // === Step 2: Define ship variants, patterns, and ingredient placeholders ===
-  // Placeholders:
-  //   BOAT -> replaced with vanilla boat for that wood
-  //   CHEST_BOAT -> replaced with chest boat for that wood
+  /* === Step 2: Define ship variants, patterns, and ingredient placeholders ===
+     Placeholders:
+       BOAT -> replaced with vanilla boat for that wood
+       CHEST_BOAT -> replaced with chest boat for that wood*/
   const shipVariants = [
     { type: 'cog', pattern: ['ABA','CCC'], items: ['#forge:ropes', 'smallships:sail', 'BOAT'] },
     { type: 'brigg', pattern: ['BAB','CCC'], items: ['#forge:ropes', 'smallships:sail', 'CHEST_BOAT'] },
@@ -20,7 +20,7 @@ ServerEvents.recipes(event => {
     { type: 'drakkar', pattern: ['EBE','DAD','CCC'], items: ['#forge:ropes', 'smallships:sail', 'BOAT', 'minecraft:chest', 'minecraft:string'] },
   ]
 
-  // === Step 3: Map wood types to vanilla boats ===
+  /* === Step 3: Map wood types to vanilla boats === */
   const boatMap = {
     oak: ['minecraft:oak_boat','minecraft:oak_chest_boat'],
     spruce: ['minecraft:spruce_boat','minecraft:spruce_chest_boat'],
@@ -33,7 +33,7 @@ ServerEvents.recipes(event => {
     bamboo: ['minecraft:bamboo_raft','minecraft:bamboo_chest_raft']
   }
 
-  // === Step 4: Remove original recipes ===
+  /* === Step 4: Remove original recipes === */
   woodTypes.forEach(wood => {
     shipVariants.forEach(variant => {
       event.remove({ output: `smallships:${wood}_${variant.type}` })
@@ -41,7 +41,7 @@ ServerEvents.recipes(event => {
   })
   event.remove({ output: 'smallships:sail' })
 
-  // === Step 5: Add new shaped recipes with diagrams ===
+  /* === Step 5: Add new shaped recipes with diagrams === */
   woodTypes.forEach(wood => {
     shipVariants.forEach(variant => {
 
@@ -62,25 +62,25 @@ ServerEvents.recipes(event => {
         if (items[i]) keyMap[k] = items[i]
       })
 
-      // === ASCII Diagrams for each ship variant ===
-      // Cog:
-      //  A B A
-      //  C C C
-      //
-      // Brigg:
-      //  B A B
-      //  C C C
-      //
-      // Galley:
-      //  A A A
-      //  D B D
-      //  C C C
-      //
-      // Drakkar:
-      //  E B E
-      //  D A D
-      //  C C C
-
+      /* === ASCII Diagrams for each ship variant ===
+         Cog:
+          A B A
+          C C C
+        
+         Brigg:
+          B A B
+          C C C
+        
+         Galley:
+          A A A
+          D B D
+          C C C
+        
+         Drakkar:
+          E B E
+          D A D
+          C C C
+      */
       event.shaped(
         Item.of(`smallships:${wood}_${variant.type}`),
         variant.pattern,
@@ -89,11 +89,12 @@ ServerEvents.recipes(event => {
     })
   })
 
-  // === Step 6: Sail recipe ===
-  // Diagram:
-  //  A A A
-  //  A B A
-  //  C B C
+  /* === Step 6: Sail recipe ===
+     Diagram:
+      A A A
+      A B A
+      C B C
+  */
   event.shaped(
     Item.of('smallships:sail'),
     ['AAA','ABA','CBC'],

@@ -15,6 +15,7 @@ ServerEvents.tags('item', event => {
     ropes.forEach(id => {
         if (Item.exists(id)) {
             event.add('forge:ropes', id)
+            console.info(`[Tag Added] Item added to forge:ropes: ${id}`)
         } else {
             console.info(`[Tag Skipped] Item not found: ${id}`)
         }
