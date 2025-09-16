@@ -17,10 +17,11 @@ ServerEvents.tags('item', event => {
         'farmersdelight:rope',
         'brewery:rope'
     ]
-    // Here we use <let ropes> to store all possible rope items. 
-    // If we used a dynamic method, we might need to have a blacklist of items to exclude,
-    // which could be more complex and error-prone.
-    // So this static list is simpler and more reliable for our needs.
+    /* Here we use <let ropes> to store all possible rope items. 
+       If we used a dynamic method, we might need to have a blacklist of items to exclude,
+       which could be more complex and error-prone.
+       And generally, mods don't add that many rope-like items,
+       So this static list is simpler and more reliable for our needs.*/
     ropes.forEach(id => {
         if (Item.exists(id)) {
             event.add('forge:ropes', id)

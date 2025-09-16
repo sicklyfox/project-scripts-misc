@@ -1,0 +1,31 @@
+name: Generate Script List
+
+on:
+  push:
+    paths:
+      - 'scripts/**'
+  workflow_dispatch:
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Generate script list
+        run: |
+          mkdir -p generated
+          echo "const scripts = " > generated/scripts.js
+          echo "[" >> generated/scripts.js
+          find scripts -type f -name "*.js" | sort | sed 's/^/  "/;s/$/",/' >> generated/scripts.js
+          echo "]" >> generated/scripts.js
+          echo "export default scripts;" >> generated/scripts.js
+
+      - name: Commit generated scripts list
+        run: |
+          git config --local user.name "github-actions"
+          git config --local user.email "github-actions@github.com"
+          git add generated/scripts.js
+          git commit -m "Update scripts list" || echo "No changes to commit"
+          git push

@@ -1,0 +1,44 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #1e1e2f;       /* dark background */
+  color: #e0e0e0;            /* light text */
+  margin: 0;
+  padding: 20px;
+}
+
+.container {
+  max-width: 700px;
+  margin: 0 auto;
+  background: #2a2a3d;       /* slightly lighter card background */
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.5);
+}
+
+h1 {
+  text-align: center;
+  color: #ffffff;
+  margin-bottom: 20px;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  margin: 10px 0;
+  padding-left: 10px;
+  border-left: 3px solid #444;  /* subtle left border for each item */
+}
+
+a {
+  text-decoration: none;
+  color: #4fc3f7;               /* soft blue links */
+  font-weight: 500;
+}
+
+a:hover {
+  text-decoration: underline;
+  color: #80deea;               /* brighter blue on hover */
+}

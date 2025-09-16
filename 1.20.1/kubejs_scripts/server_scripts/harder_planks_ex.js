@@ -13,6 +13,7 @@
   - Prevents duplicate recipe generation
   - Uses tags (#kubejs:<wood>_logs_all) instead of hardcoded lists
   - Logs detailed info to console for debugging
+  
   Note: This script uses tags created in tags/item_tags.js
 */
 

@@ -1,15 +1,14 @@
 // sicklyfox.Dev - KubeJS Script
 // tags/block_tags_grass.js
 // Version: 1.1
-// Description: Dynamically tag blocks/items with "grass" in their name, with optional blacklist.
+// Description: Dynamically tag blocks/items with "grass" in their name, with optional blacklist. 
 /* Note: I haven't tested this script yet, but it should work fine.*/
 console.info('Loaded Dynamic Grass Block Tags')
 
 ServerEvents.tags('block', event => {
     // Optional blacklist for blocks you DON'T want to include
     let blacklist = [
-        "minecraft:seagrass",               // Example: block contains "grass" in name but should be excluded
-        "immersive_weathering:fake_grass",
+        "minecraft:seagrass",      // Example: block contains "grass" in name but should be excluded
         "minecraft:grass_block"    // Example from a mod
     ]
     // In item_tags.js, we previously mentioned how needing a blacklist can complicate things.

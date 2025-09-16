@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Scripts</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>My Scripts</h1>
+    <ul id="script-list"></ul>
+  </div>
+
+  <script type="module">
+    import scripts from './generated/scripts.js';
+    const listEl = document.getElementById("script-list");
+
+    scripts.forEach(script => {
+      const li = document.createElement("li");
+      const a = document.createElement("a");
+      a.href = script;
+      a.textContent = script.split("/").pop();
+      a.target = "_blank";
+      li.appendChild(a);
+      listEl.appendChild(li);
+    });
+  </script>
+</body>
+</html>
