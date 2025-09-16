@@ -30,8 +30,10 @@
     const contentEl = document.getElementById("script-content");
 
     let selectedLi = null;
+    const baseUrl = `${window.location.origin}/project-scripts-misc/generated/scripts/`;
     scripts.forEach(script => {
-      const parts = script.split("/").slice(1); // remove top-level "kubejs_scripts"
+      // Remove top-level folder if present (e.g., "1.20.1/kubejs_scripts/")
+      const parts = script.split("/").slice(1);
       let currentUl = listEl;
 
       parts.forEach((part, index) => {
@@ -44,7 +46,8 @@
           a.textContent = part;
           a.addEventListener("click", (e) => {
             e.preventDefault();
-            fetch(`${window.location.origin}/project-scripts-misc/generated/scripts/${parts.join("/")}`)
+            // Use full absolute URL for fetch
+            fetch(baseUrl + parts.join("/"))
               .then(res => res.text())
               .then(text => contentEl.textContent = text)
               .catch(err => contentEl.textContent = "Error loading file.");
