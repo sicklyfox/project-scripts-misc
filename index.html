@@ -14,16 +14,55 @@
 
   <script type="module">
     import scripts from './generated/scripts.js';
+
     const listEl = document.getElementById("script-list");
 
     scripts.forEach(script => {
-      const li = document.createElement("li");
-      const a = document.createElement("a");
-      a.href = script;
-      a.textContent = script.split("/").pop();
-      a.target = "_blank";
-      li.appendChild(a);
-      listEl.appendChild(li);
+      const parts = script.split("/").slice(1); // remove top-level "scripts" folder
+      let currentUl = listEl;
+
+      parts.forEach((part, index) => {
+        if (index === parts.length - 1) {
+          // file
+          const li = document.createElement("li");
+          li.classList.add("file");
+          const a = document.createElement("a");
+          a.href = script;
+          a.textContent = part;
+          a.target = "_blank";
+          li.appendChild(a);
+          currentUl.appendChild(li);
+        } else {
+          // folder
+          let folderLi = Array.from(currentUl.children).find(
+            li => li.classList.contains("folder") && li.dataset.name === part
+          );
+
+          if (!folderLi) {
+            folderLi = document.createElement("li");
+            folderLi.classList.add("folder");
+            folderLi.dataset.name = part;
+
+            // Folder label
+            const label = document.createElement("span");
+            label.textContent = part;
+            label.classList.add("folder-label");
+            folderLi.appendChild(label);
+
+            // Nested <ul>
+            const nestedUl = document.createElement("ul");
+            folderLi.appendChild(nestedUl);
+
+            // Toggle collapse on click
+            label.addEventListener("click", () => {
+              nestedUl.classList.toggle("collapsed");
+            });
+
+            currentUl.appendChild(folderLi);
+          }
+          currentUl = folderLi.querySelector("ul");
+        }
+      });
     });
   </script>
 </body>

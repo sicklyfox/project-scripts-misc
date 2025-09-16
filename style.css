@@ -1,7 +1,7 @@
 body {
   font-family: Arial, sans-serif;
-  background: #1e1e2f;       /* dark background */
-  color: #e0e0e0;            /* light text */
+  background: #1e1e2f;
+  color: #e0e0e0;
   margin: 0;
   padding: 20px;
 }
@@ -9,7 +9,7 @@ body {
 .container {
   max-width: 700px;
   margin: 0 auto;
-  background: #2a2a3d;       /* slightly lighter card background */
+  background: #2a2a3d;
   padding: 30px;
   border-radius: 10px;
   box-shadow: 0 0 15px rgba(0,0,0,0.5);
@@ -23,22 +23,61 @@ h1 {
 
 ul {
   list-style: none;
-  padding: 0;
+  padding-left: 0;
 }
 
-li {
-  margin: 10px 0;
-  padding-left: 10px;
-  border-left: 3px solid #444;  /* subtle left border for each item */
+li.folder {
+  font-weight: bold;
+  margin: 5px 0;
+  border-left: 3px solid #444;
+}
+
+li.file {
+  padding-left: 20px;
+  margin: 3px 0;
+  border-left: 2px solid #555;
+}
+
+li.folder:hover, li.file:hover {
+  background: #3a3a5a;
+  border-left-color: #4fc3f7;
 }
 
 a {
   text-decoration: none;
-  color: #4fc3f7;               /* soft blue links */
-  font-weight: 500;
+  color: #4fc3f7;
 }
 
 a:hover {
   text-decoration: underline;
-  color: #80deea;               /* brighter blue on hover */
+  color: #80deea;
+}
+
+li ul {
+  padding-left: 20px;
+}
+
+/* Collapsed folders */
+li ul.collapsed {
+  display: none;
+}
+
+.folder-label {
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Add little arrow indicator */
+.folder-label::before {
+  content: "▶ ";
+  display: inline-block;
+  transition: transform 0.2s;
+}
+
+li ul.collapsed + .folder-label::before {
+  transform: rotate(0deg);
+}
+
+.folder-label + ul.collapsed::before {
+  transform: rotate(90deg);
 }
