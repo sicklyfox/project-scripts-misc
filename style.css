@@ -114,15 +114,18 @@ li.folder:hover, li.file:hover { background: #23272e; cursor: pointer; }
   align-items: center;
 }
 
+/* 🔥 Caret rotation */
 .folder-label::before {
   content: "▶";
   display: inline-block;
   font-size: 1em;
   margin-right: 4px;
-  transition: transform var(--transition);
+  transition: transform 0.25s ease; /* smooth rotate */
 }
 
-.folder-label.open::before { transform: rotate(90deg); }
+.folder-label.open::before {
+  transform: rotate(90deg); /* points downward when open */
+}
 
 li.file a {
   position: relative;
@@ -144,13 +147,13 @@ li.file a::before {
 
 li.file a.selected { background-color: #6a4cff33; color: var(--accent2); border-radius: 4px; }
 
-li ul {
+/* 🔥 Smooth expanding nested folders */
+li.folder > ul {
   padding-left: 18px;
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.25s ease;
+  transition: max-height 0.3s ease; /* smooth expand/collapse */
 }
-li.folder.open > ul { max-height: 2000px; } /* fully expands downward */
 
 /* Breadcrumbs */
 .breadcrumbs { margin: 12px 0; font-size: 0.9rem; color: #bbb; }

@@ -131,12 +131,33 @@
             label.classList.add("open");
           }
 
-          label.addEventListener("click",()=>{
-            const isOpen = li.classList.toggle("open");
-            label.classList.toggle("open", isOpen);
-            if(isOpen) openFolders.add(fullPath);
-            else openFolders.delete(fullPath);
-          });
+          label.addEventListener("click", () => {
+  const nestedUl = li.querySelector("ul");
+  const isOpen = li.classList.toggle("open");
+  label.classList.toggle("open", isOpen);
+
+  if (nestedUl) {
+    if (isOpen) {
+      // First set to "auto" height so scrollHeight is accurate
+      nestedUl.style.maxHeight = "none";
+      const targetHeight = nestedUl.scrollHeight + "px";
+      nestedUl.style.maxHeight = "0px"; // reset
+      // Animate to the new height
+      requestAnimationFrame(() => {
+        nestedUl.style.maxHeight = targetHeight;
+      });
+      openFolders.add(fullPath);
+    } else {
+      // Collapse smoothly
+      nestedUl.style.maxHeight = nestedUl.scrollHeight + "px"; // start from current
+      requestAnimationFrame(() => {
+        nestedUl.style.maxHeight = "0px";
+      });
+      openFolders.delete(fullPath);
+    }
+  }
+});
+
 
           parentUl.appendChild(li);
           renderTree(value,nestedUl,parentPath.concat(key));
