@@ -87,15 +87,15 @@ body {
   font-size: 1rem;
   overflow: initial;
   height: fit-content;
-  max-height: inherit;
 }
 
 /* Parent folder and file items */
 li.folder, li.file {
-  display: block;           /* vertical stacking */
+  display: block;  /* vertical stacking */
   position: relative;       /* for nested ul & tooltips */
   padding: 4px 0 4px 4px;  /* reduced indentation */
   margin: 0;
+  height: fit-content;
   box-sizing: border-box;
   font-size: 1em;
   background: none;
@@ -139,6 +139,7 @@ li.folder:hover, li.file:hover {
 li.folder > ul {
   display: block;
   padding-left: 8px;
+  height: fit-content;
   max-height: 0;
   overflow: scroll;
   transition: max-height 0.3s ease; /* smooth expand/collapse */
@@ -172,6 +173,7 @@ li.file > ul {
   display: block;
   padding-left: 8px;
   max-height: 0;
+  height: fit-content;
   overflow: scroll;
   transition: max-height 0.3s ease; /* smooth expand/collapse */
 }
