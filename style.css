@@ -30,7 +30,6 @@ body {
   padding: 8px 0;
   box-sizing: border-box;
   border-right: 2px solid var(--accent2);
-  height: 100vh;
   position: relative;
   transition: width var(--transition);
 }
@@ -78,27 +77,31 @@ body {
 
 /* Folder tree container */
 .folder-tree {
-  width: 90%;
+  align-self: stretch;
+  width: 100%;
+  min-height: 0;
   list-style: none;
   padding-left: 0;
-  margin: 0;
+  margin-top: 0;
+  margin-bottom: 0;
   font-size: 1rem;
-  overflow-y: auto;
-  flex: 1;
+  overflow: initial;
+  height: fit-content;
+  max-height: inherit;
 }
 
 /* Parent folder and file items */
 li.folder, li.file {
   display: block;           /* vertical stacking */
   position: relative;       /* for nested ul & tooltips */
-  padding: 4px 0 4px 12px;  /* reduced indentation */
+  padding: 4px 0 4px 4px;  /* reduced indentation */
   margin: 0;
   box-sizing: border-box;
   font-size: 1em;
   background: none;
   transition: background 0.15s;
   white-space: nowrap;
-  overflow: hidden;
+  overflow: visible;
   text-overflow: ellipsis;
 }
 
@@ -137,13 +140,13 @@ li.folder > ul {
   display: block;
   padding-left: 8px;
   max-height: 0;
-  overflow: hidden;
+  overflow: scroll;
   transition: max-height 0.3s ease; /* smooth expand/collapse */
 }
 
 /* Files inside folders */
 li.file a {
-  position: relative;
+  position: inherit;
   padding-left: 10px;
   color: #e0e0e0;
   text-decoration: none;
@@ -153,8 +156,8 @@ li.file a {
 }
 
 li.file a::before {
-  content: "📄 ";
-  position: absolute;
+  content: "📄  ";
+  position: relative;
   left: 0;
   color: var(--accent);
   font-size: 1em;
@@ -169,7 +172,7 @@ li.file > ul {
   display: block;
   padding-left: 8px;
   max-height: 0;
-  overflow: hidden;
+  overflow: scroll;
   transition: max-height 0.3s ease; /* smooth expand/collapse */
 }
 
@@ -182,13 +185,13 @@ li.file > ul {
   width: 100%;
   margin-top: auto;
   text-align: center;
-  padding-top: 12px;
+  padding-top: 5px;
 
 }
 .discord-footer-icon {
   width: 64px;
   height: 64px;
-  object-fit: cover;
+  object-fit: contain;
   margin: 0 auto;
   display: block;
   cursor: pointer;
@@ -272,7 +275,7 @@ pre[class*="language-"] {
 
 /* Responsive */
 @media (max-width:700px){
-  .sidebar { width:100vw; height:1000p; position:static; border-right:none; border-bottom:2px solid var(--accent2); flex-direction:row; padding:8px 0; }
+  .sidebar { width:100vw; height:1000p; position:static; border-right:none; border-bottom:2px solid var(--accent2); flex-direction:column; padding:8px 0; }
   .sidebar-header { margin-bottom:0; flex:0 0 auto; }
   .folder-tree { font-size:0.95rem; margin-top:0; padding-left:4px; padding-right:4px; }
   .main-content { padding:8px 4vw; }
