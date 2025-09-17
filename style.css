@@ -55,10 +55,10 @@ body {
 }
 
 .server-icon {
-  width: 96px;
-  height: 96px;
-  object-fit: cover;
-  border-radius: 50%;
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
+  border-radius: 10%;
   box-shadow: 0 0 16px 0 var(--accent2)44;
   margin-bottom: 8px;
 }
@@ -76,6 +76,7 @@ body {
   box-shadow: 0 0 0 2px var(--accent2)22;
 }
 
+/* Folder tree container */
 .folder-tree {
   width: 90%;
   list-style: none;
@@ -86,10 +87,11 @@ body {
   flex: 1;
 }
 
+/* Parent folder and file items */
 li.folder, li.file {
-  display: flex;
-  align-items: center;
-  padding: 4px 0 4px 18px;
+  display: block;           /* vertical stacking */
+  position: relative;       /* for nested ul & tooltips */
+  padding: 4px 0 4px 12px;  /* reduced indentation */
   margin: 0;
   box-sizing: border-box;
   font-size: 1em;
@@ -100,8 +102,12 @@ li.folder, li.file {
   text-overflow: ellipsis;
 }
 
-li.folder:hover, li.file:hover { background: #23272e; cursor: pointer; }
+li.folder:hover, li.file:hover {
+  background: #23272e;
+  cursor: pointer;
+}
 
+/* Folder label with caret */
 .folder-label {
   cursor: pointer;
   user-select: none;
@@ -109,31 +115,40 @@ li.folder:hover, li.file:hover { background: #23272e; cursor: pointer; }
   font-size: 1em;
   margin-right: 6px;
   color: var(--accent2);
-  transition: color var(--transition);
   display: flex;
   align-items: center;
+  transition: color var(--transition);
 }
 
-/* 🔥 Caret rotation */
 .folder-label::before {
   content: "▶";
   display: inline-block;
   font-size: 1em;
   margin-right: 4px;
-  transition: transform 0.25s ease; /* smooth rotate */
+  transition: transform 0.25s ease;
 }
 
 .folder-label.open::before {
-  transform: rotate(90deg); /* points downward when open */
+  transform: rotate(90deg);
 }
 
+/* 🔥 Smooth expanding nested folders */
+li.folder > ul {
+  display: block;
+  padding-left: 8px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease; /* smooth expand/collapse */
+}
+
+/* Files inside folders */
 li.file a {
   position: relative;
-  padding-left: 22px;
+  padding-left: 10px;
   color: #e0e0e0;
   text-decoration: none;
   flex: 1;
-  overflow: hidden;
+  overflow: scroll;
   text-overflow: ellipsis;
 }
 
@@ -145,11 +160,14 @@ li.file a::before {
   font-size: 1em;
 }
 
-li.file a.selected { background-color: #6a4cff33; color: var(--accent2); border-radius: 4px; }
-
-/* 🔥 Smooth expanding nested folders */
-li.folder > ul {
-  padding-left: 18px;
+li.file a.selected {
+  background-color: #6a4cff33;
+  color: var(--accent2);
+  border-radius: 4px;
+}
+li.file > ul {
+  display: block;
+  padding-left: 8px;
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.3s ease; /* smooth expand/collapse */
@@ -165,7 +183,7 @@ li.folder > ul {
   margin-top: auto;
   text-align: center;
   padding-top: 12px;
-  border-top: 2px solid var(--accent2);
+
 }
 .discord-footer-icon {
   width: 64px;
@@ -254,7 +272,7 @@ pre[class*="language-"] {
 
 /* Responsive */
 @media (max-width:700px){
-  .sidebar { width:100vw; height:auto; position:static; border-right:none; border-bottom:2px solid var(--accent2); flex-direction:row; padding:8px 0; }
+  .sidebar { width:100vw; height:1000p; position:static; border-right:none; border-bottom:2px solid var(--accent2); flex-direction:row; padding:8px 0; }
   .sidebar-header { margin-bottom:0; flex:0 0 auto; }
   .folder-tree { font-size:0.95rem; margin-top:0; padding-left:4px; padding-right:4px; }
   .main-content { padding:8px 4vw; }

@@ -138,25 +138,24 @@
 
   if (nestedUl) {
     if (isOpen) {
-      // First set to "auto" height so scrollHeight is accurate
-      nestedUl.style.maxHeight = "none";
-      const targetHeight = nestedUl.scrollHeight + "px";
+      // Ensure the element is measured correctly
+      nestedUl.style.display = "block"; // temporarily show
+      const height = nestedUl.scrollHeight + "px";
       nestedUl.style.maxHeight = "0px"; // reset
-      // Animate to the new height
       requestAnimationFrame(() => {
-        nestedUl.style.maxHeight = targetHeight;
+        nestedUl.style.maxHeight = height; // expand
       });
       openFolders.add(fullPath);
     } else {
-      // Collapse smoothly
       nestedUl.style.maxHeight = nestedUl.scrollHeight + "px"; // start from current
       requestAnimationFrame(() => {
-        nestedUl.style.maxHeight = "0px";
+        nestedUl.style.maxHeight = "0px"; // collapse
       });
       openFolders.delete(fullPath);
     }
   }
 });
+
 
 
           parentUl.appendChild(li);
