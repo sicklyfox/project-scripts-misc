@@ -2,69 +2,43 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Scripts page</title>
+  <title>Folder Tree Viewer</title>
   <link rel="stylesheet" href="style.css">
-  <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
 </head>
 <body>
   <div class="sidebar" id="sidebar">
-    <button id="sidebar-toggle" aria-label="Toggle sidebar">⮞</button>
-    <div class="sidebar-header">
-      <img src="assets/discord-icon-tbg.png" alt="Site Logo" class="site-logo">
-    </div>
-    <ul id="script-list" class="folder-tree"></ul>
-    <div class="sidebar-footer">
-      <a href="https://discord.gg/Gm7fjxaD3h" target="_blank">
-        <img src="assets/discord_link.png" alt="Join Discord" class="discord-footer-icon">
-      </a>
+    <img src="logo.png" alt="Logo" class="site-logo" />
+    <input type="text" id="searchBar" placeholder="Search files...">
+    <ul id="fileList"></ul>
+    <div class="discord-footer">
+      <img src="discord.png" class="discord-footer-icon" alt="Discord">
     </div>
   </div>
 
-  <div class="main-content" id="main-content">
-    <div class="breadcrumbs"></div>
-    <pre id="script-content">Select a script from the sidebar to view its contents.</pre>
+  <div class="main">
+    <div id="breadcrumbs" class="breadcrumbs"></div>
+    <div id="content" class="content"></div>
   </div>
 
-  <script type="module">
-    import scripts from './generated/scripts.js';
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script>
+    const baseUrl = "./"; // root for fetching files
+    const scripts = [
+      "src/index.js",
+      "src/components/Button.js",
+      "src/components/Icon.js",
+      "src/utils/helpers/math.js",
+      "src/utils/helpers/strings.js",
+      "README.md"
+    ];
 
-    const listEl = document.getElementById("script-list");
-    const contentEl = document.getElementById("script-content");
-    const sidebar = document.getElementById("sidebar");
-    const mainContent = document.getElementById("main-content");
-    const sidebarToggle = document.getElementById("sidebar-toggle");
-    const breadcrumbs = document.querySelector(".breadcrumbs");
-
-    const openFolders = new Set(); // Tracks expanded folders
+    const listEl = document.getElementById("fileList");
+    const contentEl = document.getElementById("content");
+    const breadcrumbs = document.getElementById("breadcrumbs");
+    const searchBar = document.getElementById("searchBar");
     let selectedLi = null;
-    const baseUrl = `${window.location.origin}/project-scripts-misc/generated/scripts/`;
-
-    // Prism.js
-    const prismScript = document.createElement('script');
-    prismScript.src = 'https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js';
-    prismScript.defer = true;
-    document.body.appendChild(prismScript);
-    const prismLangScript = document.createElement('script');
-    prismLangScript.src = 'https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-javascript.min.js';
-    prismLangScript.defer = true;
-    document.body.appendChild(prismLangScript);
-
-    // Sidebar toggle
-    let sidebarExpanded = true;
-    sidebarToggle.addEventListener("click", () => {
-      sidebarExpanded = !sidebarExpanded;
-      sidebar.classList.toggle("collapsed", !sidebarExpanded);
-      sidebarToggle.textContent = sidebarExpanded ? "⮞" : "⮜";
-      mainContent.style.marginLeft = sidebarExpanded ? "" : "56px";
-    });
-
-    // Search bar
-    const searchBar = document.createElement("input");
-    searchBar.type = "text";
-    searchBar.placeholder = "Search scripts...";
-    searchBar.className = "script-search";
-    listEl.parentNode.insertBefore(searchBar, listEl);
+    const openFolders = new Set();
 
     // Build tree structure
     function buildTree(paths) {
@@ -83,50 +57,57 @@
 
     // Render tree with persistent folder state
     function renderTree(node, parentUl, parentPath = []) {
-      Object.entries(node).forEach(([key,value])=>{
-        if(key==="__file") return;
+      Object.entries(node).forEach(([key, value]) => {
+        if (key === "__file") return;
 
-        if(value.__file){
-          const li=document.createElement("li");
+        if (value.__file) {
+          // file node
+          const li = document.createElement("li");
           li.classList.add("file");
-          const a=document.createElement("a");
-          a.href="#";
-          a.textContent = key.length>32 ? key.slice(0,29)+"..." : key;
+          const a = document.createElement("a");
+          a.href = "#";
+          a.textContent = key.length > 32 ? key.slice(0, 29) + "..." : key;
           a.title = key;
           a.dataset.name = key;
-          a.addEventListener("click",(e)=>{
+          a.addEventListener("click", (e) => {
             e.preventDefault();
-            fetch(baseUrl+value.__file).then(res=>res.ok?res.text():Promise.reject())
-              .then(text=>{
-                if(window.Prism){
-                  contentEl.innerHTML = `<pre class='language-javascript'><code class='language-javascript'>${Prism.highlight(text, Prism.languages.javascript,'javascript')}</code></pre>`;
-                } else { contentEl.textContent = text; }
-              }).catch(()=>contentEl.textContent="Error loading file.");
-            if(selectedLi) selectedLi.classList.remove("selected");
+            fetch(baseUrl + value.__file)
+              .then((res) => res.ok ? res.text() : Promise.reject())
+              .then((text) => {
+                if (window.Prism) {
+                  contentEl.innerHTML =
+                    `<pre class='language-javascript'><code class='language-javascript'>${Prism.highlight(text, Prism.languages.javascript, 'javascript')}</code></pre>`;
+                } else {
+                  contentEl.textContent = text;
+                }
+              })
+              .catch(() => (contentEl.textContent = "Error loading file."));
+            if (selectedLi) selectedLi.classList.remove("selected");
             li.classList.add("selected");
             selectedLi = li;
-            breadcrumbs.innerHTML = parentPath.concat(key).map((p,i,arr)=>{
-              if(i===arr.length-1) return `<span>${p}</span>`;
+            breadcrumbs.innerHTML = parentPath.concat(key).map((p, i, arr) => {
+              if (i === arr.length - 1) return `<span>${p}</span>`;
               return `<span>${p}</span> <span class='crumb-sep'>/</span>`;
             }).join("");
           });
           li.appendChild(a);
           parentUl.appendChild(li);
         } else {
-          const li=document.createElement("li");
+          // folder node
+          const li = document.createElement("li");
           li.classList.add("folder");
           li.dataset.name = key;
-          const label=document.createElement("span");
+          const label = document.createElement("span");
           label.textContent = key;
           label.classList.add("folder-label");
           label.dataset.name = key;
           li.appendChild(label);
 
-          const nestedUl=document.createElement("ul");
+          const nestedUl = document.createElement("ul");
           li.appendChild(nestedUl);
 
           const fullPath = parentPath.concat(key).join("/");
-          if(openFolders.has(fullPath)) {
+          if (openFolders.has(fullPath)) {
             li.classList.add("open");
             label.classList.add("open");
           }
@@ -143,19 +124,25 @@
           });
 
           parentUl.appendChild(li);
-          renderTree(value,nestedUl,parentPath.concat(key));
+          renderTree(value, nestedUl, parentPath.concat(key));
         }
       });
     }
 
-    function renderSidebar(filter=""){
-      listEl.innerHTML="";
-      const tree = buildTree(filter ? scripts.filter(s=>s.toLowerCase().includes(filter.toLowerCase())) : scripts);
-      renderTree(tree,listEl);
+    function renderSidebar(filter = "") {
+      listEl.innerHTML = "";
+      const tree = buildTree(
+        filter
+          ? scripts.filter((s) =>
+              s.toLowerCase().includes(filter.toLowerCase())
+            )
+          : scripts
+      );
+      renderTree(tree, listEl);
     }
     renderSidebar();
 
-    searchBar.addEventListener("input", e=>{
+    searchBar.addEventListener("input", (e) => {
       renderSidebar(e.target.value);
     });
   </script>
