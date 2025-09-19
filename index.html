@@ -77,7 +77,7 @@
     }
 
     // Render tree with smooth auto-height
-    function renderTree(node, parentUl, parentPath = []) {
+function renderTree(node, parentUl, parentPath = []) {
   Object.entries(node).forEach(([key, value]) => {
     if (key === "__file") return;
 
@@ -97,13 +97,15 @@
           .then(text => {
             if (window.Prism) {
               contentEl.innerHTML = `<pre class='language-javascript'><code class='language-javascript'>${Prism.highlight(text, Prism.languages.javascript,'javascript')}</code></pre>`;
-            } else { contentEl.textContent = text; }
+            } else {
+              contentEl.textContent = text;
+            }
           }).catch(() => contentEl.textContent = "Error loading file.");
-          // Highlight selected
+
         if (selectedLi) selectedLi.classList.remove("selected");
         li.classList.add("selected");
         selectedLi = li;
-          // Update breadcrumbs
+
         breadcrumbs.innerHTML = parentPath.concat(key).map((p, i, arr) => {
           if (i === arr.length - 1) return `<span>${p}</span>`;
           return `<span>${p}</span> <span class='crumb-sep'>/</span>`;
@@ -116,16 +118,16 @@
       const li = document.createElement("li");
       li.classList.add("folder");
       li.dataset.name = key;
-      // Folder label
+
       const label = document.createElement("span");
       label.textContent = key;
       label.classList.add("folder-label");
       label.dataset.name = key;
       li.appendChild(label);
-      //  Nested UL
+
       const nestedUl = document.createElement("ul");
       li.appendChild(nestedUl);
-      // Restore open state
+
       const fullPath = parentPath.concat(key).join("/");
       if (openFolders.has(fullPath)) {
         li.classList.add("open");
@@ -133,24 +135,20 @@
         nestedUl.style.display = "block";
         nestedUl.style.maxHeight = nestedUl.scrollHeight + "px";
       }
-      // Folder click to toggle
+
+      // Click handler: only animate this folder
       label.addEventListener("click", () => {
         const isOpen = li.classList.toggle("open");
         label.classList.toggle("open", isOpen);
 
-        // Animate current folder
         if (isOpen) {
+          // Show nested folder smoothly
           nestedUl.style.display = "block";
           const height = nestedUl.scrollHeight + "px";
           nestedUl.style.maxHeight = "0px";
           requestAnimationFrame(() => nestedUl.style.maxHeight = height);
-        } else {
-          nestedUl.style.maxHeight = nestedUl.scrollHeight + "px";
-          requestAnimationFrame(() => nestedUl.style.maxHeight = "0px");
-        }
 
-        // Close sibling folders
-        if (isOpen) {
+          // Close sibling folders
           const siblings = Array.from(li.parentNode.children)
             .filter(sib => sib !== li && sib.classList.contains('folder'));
           siblings.forEach(sib => {
@@ -158,28 +156,23 @@
             sib.querySelector('span.folder-label')?.classList.remove('open');
             const sibUl = sib.querySelector('ul');
             if (sibUl) sibUl.style.maxHeight = '0px';
-            openFolders.delete(parentPath.concat(sib.dataset.name).join("/"));
           });
+
           openFolders.add(fullPath);
         } else {
+          // Collapse folder smoothly
+          nestedUl.style.maxHeight = nestedUl.scrollHeight + "px";
+          requestAnimationFrame(() => nestedUl.style.maxHeight = "0px");
           openFolders.delete(fullPath);
         }
-
-        // Update parent heights after small delay to avoid canceling animation
-        setTimeout(() => {
-          let parent = li.parentNode;
-          while (parent && parent.tagName === "UL") {
-            parent.style.maxHeight = parent.scrollHeight + "px";
-            parent = parent.parentNode.closest("ul");
-          }
-        }, 50);
       });
-      // Append folder and recurse
+
       parentUl.appendChild(li);
       renderTree(value, nestedUl, parentPath.concat(key));
     }
   });
 }
+
     // Render sidebar with optional filtering
     function renderSidebar(filter = "") {
       listEl.innerHTML = "";

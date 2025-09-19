@@ -133,15 +133,13 @@ li.folder, li.file {
 
 /* Nested folders with smooth height animation */
 li.folder > ul {
-  display: block;
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.3s ease;
-  padding-left: 8px;
+  transition: max-height 0.25s ease;
 }
 
 li.folder.open > ul {
-  max-height: 2000px; /* enough for nested content; exact height is handled in JS */
+  max-height: 1000px; /* enough for nested content; exact height is handled in JS */
 }
 
 /* Files inside folders */
