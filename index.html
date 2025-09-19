@@ -76,7 +76,6 @@
       return root;
     }
 
-    // Render tree with smooth auto-height
 function renderTree(node, parentUl, parentPath = []) {
   Object.entries(node).forEach(([key, value]) => {
     if (key === "__file") return;
@@ -136,41 +135,41 @@ function renderTree(node, parentUl, parentPath = []) {
         nestedUl.style.maxHeight = nestedUl.scrollHeight + "px";
       }
 
-        label.addEventListener("click", () => {
-          const isOpen = li.classList.toggle("open");
-          label.classList.toggle("open", isOpen);
+      // Click handler: only animate this folder
+      label.addEventListener("click", () => {
+        const isOpen = li.classList.toggle("open");
+        label.classList.toggle("open", isOpen);
 
-          const nestedUl = li.querySelector("ul");
-          if (isOpen) {
-            nestedUl.style.display = "block";
-           const height = nestedUl.scrollHeight + "px";
-            nestedUl.style.maxHeight = "0px";
-            requestAnimationFrame(() => nestedUl.style.maxHeight = height);
+        if (isOpen) {
+          nestedUl.style.display = "block";
+          const height = nestedUl.scrollHeight + "px";
+          nestedUl.style.maxHeight = "0px";
+          requestAnimationFrame(() => nestedUl.style.maxHeight = height);
 
-            // Close siblings
-            Array.from(li.parentNode.children)
-              .filter(sib => sib !== li && sib.classList.contains('folder'))
-              .forEach(sib => {
-                sib.classList.remove('open');
-               sib.querySelector('span.folder-label')?.classList.remove('open');
-                const sibUl = sib.querySelector('ul');
-                if (sibUl) sibUl.style.maxHeight = "0px";
-              });
+          // Close sibling folders
+          Array.from(li.parentNode.children)
+            .filter(sib => sib !== li && sib.classList.contains('folder'))
+            .forEach(sib => {
+              sib.classList.remove('open');
+              sib.querySelector('span.folder-label')?.classList.remove('open');
+              const sibUl = sib.querySelector('ul');
+              if (sibUl) sibUl.style.maxHeight = '0px';
+            });
 
-            openFolders.add(fullPath);
-          } else {
-            nestedUl.style.maxHeight = nestedUl.scrollHeight + "px";
-            requestAnimationFrame(() => nestedUl.style.maxHeight = "0px");
-            openFolders.delete(fullPath);
-          }
-        });
-
+          openFolders.add(fullPath);
+        } else {
+          nestedUl.style.maxHeight = nestedUl.scrollHeight + "px";
+          requestAnimationFrame(() => nestedUl.style.maxHeight = "0px");
+          openFolders.delete(fullPath);
+        }
+      });
 
       parentUl.appendChild(li);
       renderTree(value, nestedUl, parentPath.concat(key));
     }
   });
 }
+
 
     // Render sidebar with optional filtering
     function renderSidebar(filter = "") {

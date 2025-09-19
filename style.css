@@ -78,7 +78,6 @@ body {
 
 /* Folder tree container */
 .folder-tree {
-  align-self: stretch;
   width: 100%;
   min-height: 0;
   list-style: none;
@@ -135,10 +134,11 @@ li.folder > ul {
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.25s ease;
+  padding-left: 8px;
 }
 
 li.folder.open > ul {
-  max-height: 1000px; /* enough for nested content; exact height is handled in JS */
+  max-height: 1000px; /* Large enough for nested content */
 }
 
 /* Files inside folders */
