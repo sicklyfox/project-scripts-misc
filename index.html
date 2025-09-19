@@ -78,123 +78,116 @@
 
     // Render tree with smooth auto-height
     function renderTree(node, parentUl, parentPath = []) {
-      Object.entries(node).forEach(([key, value]) => {
-        if (key === "__file") return;
+  Object.entries(node).forEach(([key, value]) => {
+    if (key === "__file") return;
 
-        if (value.__file) {
-          // File
-          const li = document.createElement("li");
-          li.classList.add("file");
-          const a = document.createElement("a");
-          a.href = "#";
-          a.textContent = key.length > 32 ? key.slice(0, 29) + "..." : key;
-          a.title = key;
-          a.dataset.name = key;
-          a.addEventListener("click", (e) => {
-            e.preventDefault();
-            fetch(baseUrl + value.__file)
-              .then(res => res.ok ? res.text() : Promise.reject())
-              .then(text => {
-                if (window.Prism) {
-                  contentEl.innerHTML = `<pre class='language-javascript'><code class='language-javascript'>${Prism.highlight(text, Prism.languages.javascript,'javascript')}</code></pre>`;
-                } else { contentEl.textContent = text; }
-              }).catch(() => contentEl.textContent = "Error loading file.");
-            if (selectedLi) selectedLi.classList.remove("selected");
-            li.classList.add("selected");
-            selectedLi = li;
-            breadcrumbs.innerHTML = parentPath.concat(key).map((p, i, arr) => {
-              if (i === arr.length - 1) return `<span>${p}</span>`;
-              return `<span>${p}</span> <span class='crumb-sep'>/</span>`;
-            }).join("");
-          });
-          li.appendChild(a);
-          parentUl.appendChild(li);
-        } else {
-          // Folder
-          const li = document.createElement("li");
-          li.classList.add("folder");
-          li.dataset.name = key;
-          const label = document.createElement("span");
-          label.textContent = key;
-          label.classList.add("folder-label");
-          label.dataset.name = key;
-          li.appendChild(label);
-
-          const nestedUl = document.createElement("ul");
-          li.appendChild(nestedUl);
-
-          const fullPath = parentPath.concat(key).join("/");
-          if (openFolders.has(fullPath)) {
-            li.classList.add("open");
-            label.classList.add("open");
-            nestedUl.style.display = "block";
-            nestedUl.style.maxHeight = nestedUl.scrollHeight + "px";
-          }
-
-          // Updated click handler with dynamic parent height adjustment
-          label.addEventListener("click", () => {
-            const isOpen = li.classList.toggle("open");
-            label.classList.toggle("open", isOpen);
-
-            function setUlHeight(ul, open) {
-              if (open) {
-                ul.style.display = "block";
-                const height = ul.scrollHeight + "px";
-                ul.style.maxHeight = "0px";
-                requestAnimationFrame(() => {
-                  ul.style.maxHeight = height;
-                });
-              } else {
-                ul.style.maxHeight = ul.scrollHeight + "px";
-                requestAnimationFrame(() => {
-                  ul.style.maxHeight = "0px";
-                });
-              }
-            }
-
-            setUlHeight(nestedUl, isOpen);
-
-            // Update all parent ULs recursively
-            let parent = li.parentNode;
-            while (parent && parent.tagName === "UL") {
-              const totalHeight = Array.from(parent.children)
-                .map(c => c.scrollHeight)
-                .reduce((a, b) => a + b, 0);
-              parent.style.maxHeight = totalHeight + "px";
-              parent = parent.parentNode.closest("ul");
-            }
-
-            // Close siblings if opening
-            if (isOpen) {
-              const siblings = Array.from(li.parentNode.children).filter(
-                sib => sib !== li && sib.classList.contains('folder')
-              );
-              siblings.forEach(sib => {
-                sib.classList.remove('open');
-                sib.querySelector('span.folder-label')?.classList.remove('open');
-                const sibUl = sib.querySelector('ul');
-                if (sibUl) sibUl.style.maxHeight = '0px';
-                openFolders.delete(parentPath.concat(sib.dataset.name).join("/"));
-              });
-              openFolders.add(fullPath);
-            } else {
-              openFolders.delete(fullPath);
-            }
-          });
-
-          parentUl.appendChild(li);
-          renderTree(value, nestedUl, parentPath.concat(key));
-        }
+    if (value.__file) {
+      // File
+      const li = document.createElement("li");
+      li.classList.add("file");
+      const a = document.createElement("a");
+      a.href = "#";
+      a.textContent = key.length > 32 ? key.slice(0, 29) + "..." : key;
+      a.title = key;
+      a.dataset.name = key;
+      a.addEventListener("click", (e) => {
+        e.preventDefault();
+        fetch(baseUrl + value.__file)
+          .then(res => res.ok ? res.text() : Promise.reject())
+          .then(text => {
+            if (window.Prism) {
+              contentEl.innerHTML = `<pre class='language-javascript'><code class='language-javascript'>${Prism.highlight(text, Prism.languages.javascript,'javascript')}</code></pre>`;
+            } else { contentEl.textContent = text; }
+          }).catch(() => contentEl.textContent = "Error loading file.");
+          // Highlight selected
+        if (selectedLi) selectedLi.classList.remove("selected");
+        li.classList.add("selected");
+        selectedLi = li;
+          // Update breadcrumbs
+        breadcrumbs.innerHTML = parentPath.concat(key).map((p, i, arr) => {
+          if (i === arr.length - 1) return `<span>${p}</span>`;
+          return `<span>${p}</span> <span class='crumb-sep'>/</span>`;
+        }).join("");
       });
-    }
+      li.appendChild(a);
+      parentUl.appendChild(li);
+    } else {
+      // Folder
+      const li = document.createElement("li");
+      li.classList.add("folder");
+      li.dataset.name = key;
+      // Folder label
+      const label = document.createElement("span");
+      label.textContent = key;
+      label.classList.add("folder-label");
+      label.dataset.name = key;
+      li.appendChild(label);
+      //  Nested UL
+      const nestedUl = document.createElement("ul");
+      li.appendChild(nestedUl);
+      // Restore open state
+      const fullPath = parentPath.concat(key).join("/");
+      if (openFolders.has(fullPath)) {
+        li.classList.add("open");
+        label.classList.add("open");
+        nestedUl.style.display = "block";
+        nestedUl.style.maxHeight = nestedUl.scrollHeight + "px";
+      }
+      // Folder click to toggle
+      label.addEventListener("click", () => {
+        const isOpen = li.classList.toggle("open");
+        label.classList.toggle("open", isOpen);
 
+        // Animate current folder
+        if (isOpen) {
+          nestedUl.style.display = "block";
+          const height = nestedUl.scrollHeight + "px";
+          nestedUl.style.maxHeight = "0px";
+          requestAnimationFrame(() => nestedUl.style.maxHeight = height);
+        } else {
+          nestedUl.style.maxHeight = nestedUl.scrollHeight + "px";
+          requestAnimationFrame(() => nestedUl.style.maxHeight = "0px");
+        }
+
+        // Close sibling folders
+        if (isOpen) {
+          const siblings = Array.from(li.parentNode.children)
+            .filter(sib => sib !== li && sib.classList.contains('folder'));
+          siblings.forEach(sib => {
+            sib.classList.remove('open');
+            sib.querySelector('span.folder-label')?.classList.remove('open');
+            const sibUl = sib.querySelector('ul');
+            if (sibUl) sibUl.style.maxHeight = '0px';
+            openFolders.delete(parentPath.concat(sib.dataset.name).join("/"));
+          });
+          openFolders.add(fullPath);
+        } else {
+          openFolders.delete(fullPath);
+        }
+
+        // Update parent heights after small delay to avoid canceling animation
+        setTimeout(() => {
+          let parent = li.parentNode;
+          while (parent && parent.tagName === "UL") {
+            parent.style.maxHeight = parent.scrollHeight + "px";
+            parent = parent.parentNode.closest("ul");
+          }
+        }, 50);
+      });
+      // Append folder and recurse
+      parentUl.appendChild(li);
+      renderTree(value, nestedUl, parentPath.concat(key));
+    }
+  });
+}
+    // Render sidebar with optional filtering
     function renderSidebar(filter = "") {
       listEl.innerHTML = "";
       const filteredScripts = filter ? scripts.filter(s => s.toLowerCase().includes(filter.toLowerCase())) : scripts;
       const tree = buildTree(filteredScripts);
       renderTree(tree, listEl);
     }
-
+    // Initial render
     renderSidebar();
     searchBar.addEventListener("input", e => renderSidebar(e.target.value));
   </script>
