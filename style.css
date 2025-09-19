@@ -144,10 +144,6 @@ li.folder.open > ul {
   max-height: 2000px; /* enough for nested content; exact height is handled in JS */
 }
 
-li.folder > ul > * {
-  min-height: 0;  /* important for grid children */
-}
-
 /* Files inside folders */
 li.file a {
   position: inherit;
@@ -243,7 +239,7 @@ pre[class*="language-"] {
 .sidebar.collapsed li.file a { font-size:0; position:relative; padding:6px; }
 .sidebar.collapsed li.file a::before { content:"•"; font-size:1.1rem; color:#e0e0e0; position:absolute; left:50%; transform:translateX(-50%); }
 .sidebar.collapsed li.file a.selected::before { color: var(--accent2); }
-.sidebar.collapsed .server-icon,.sidebar.collapsed .discord-footer-icon { width:42px; height:42px; margin:8px auto; }
+.sidebar.collapsed .site-logo,.sidebar.collapsed .discord-footer-icon { width:42px; height:42px; margin:8px auto; }
 
 /* Responsive */
 @media (max-width:700px){

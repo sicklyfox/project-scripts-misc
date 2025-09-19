@@ -131,35 +131,54 @@
             nestedUl.style.maxHeight = nestedUl.scrollHeight + "px";
           }
 
+          // Updated click handler with dynamic parent height adjustment
           label.addEventListener("click", () => {
             const isOpen = li.classList.toggle("open");
             label.classList.toggle("open", isOpen);
 
-            if (nestedUl) {
-              if (isOpen) {
-                // Collapse siblings
-                const siblings = Array.from(li.parentNode.children).filter(
-                  sib => sib !== li && sib.classList.contains('folder')
-                );
-                siblings.forEach(sib => {
-                  sib.classList.remove('open');
-                  sib.querySelector('span.folder-label')?.classList.remove('open');
-                  const sibUl = sib.querySelector('ul');
-                  if (sibUl) sibUl.style.maxHeight = '0px';
-                  openFolders.delete(parentPath.concat(sib.dataset.name).join("/"));
+            function setUlHeight(ul, open) {
+              if (open) {
+                ul.style.display = "block";
+                const height = ul.scrollHeight + "px";
+                ul.style.maxHeight = "0px";
+                requestAnimationFrame(() => {
+                  ul.style.maxHeight = height;
                 });
-
-                // Expand this folder
-                nestedUl.style.display = "block";
-                const height = nestedUl.scrollHeight + "px";
-                nestedUl.style.maxHeight = "0px";
-                requestAnimationFrame(() => { nestedUl.style.maxHeight = height; });
-                openFolders.add(fullPath);
               } else {
-                nestedUl.style.maxHeight = nestedUl.scrollHeight + "px";
-                requestAnimationFrame(() => { nestedUl.style.maxHeight = "0px"; });
-                openFolders.delete(fullPath);
+                ul.style.maxHeight = ul.scrollHeight + "px";
+                requestAnimationFrame(() => {
+                  ul.style.maxHeight = "0px";
+                });
               }
+            }
+
+            setUlHeight(nestedUl, isOpen);
+
+            // Update all parent ULs recursively
+            let parent = li.parentNode;
+            while (parent && parent.tagName === "UL") {
+              const totalHeight = Array.from(parent.children)
+                .map(c => c.scrollHeight)
+                .reduce((a, b) => a + b, 0);
+              parent.style.maxHeight = totalHeight + "px";
+              parent = parent.parentNode.closest("ul");
+            }
+
+            // Close siblings if opening
+            if (isOpen) {
+              const siblings = Array.from(li.parentNode.children).filter(
+                sib => sib !== li && sib.classList.contains('folder')
+              );
+              siblings.forEach(sib => {
+                sib.classList.remove('open');
+                sib.querySelector('span.folder-label')?.classList.remove('open');
+                const sibUl = sib.querySelector('ul');
+                if (sibUl) sibUl.style.maxHeight = '0px';
+                openFolders.delete(parentPath.concat(sib.dataset.name).join("/"));
+              });
+              openFolders.add(fullPath);
+            } else {
+              openFolders.delete(fullPath);
             }
           });
 
