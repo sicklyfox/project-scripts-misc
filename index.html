@@ -11,7 +11,7 @@
   <div class="sidebar" id="sidebar">
     <button id="sidebar-toggle" aria-label="Toggle sidebar">⮞</button>
     <div class="sidebar-header">
-      <img src="assets/discord-icon-tbg.png" alt="Discord Server" class="server-icon">
+      <img src="assets/discord-icon-tbg.png" alt="Discord Server" class="site-logo">
     </div>
     <input type="text" placeholder="Search scripts..." class="script-search" id="script-search">
     <ul id="script-list" class="folder-tree"></ul>
@@ -78,77 +78,106 @@
 
     // Render tree with smooth auto-height
     function renderTree(node, parentUl, parentPath = []) {
-      Object.entries(node).forEach(([key,value])=>{
-        if(key==="__file") return;
+      Object.entries(node).forEach(([key, value]) => {
+        if (key === "__file") return;
 
-        if(value.__file){
-          const li=document.createElement("li");
+        if (value.__file) {
+          // File
+          const li = document.createElement("li");
           li.classList.add("file");
-          const a=document.createElement("a");
-          a.href="#";
-          a.textContent = key.length>32 ? key.slice(0,29)+"..." : key;
+          const a = document.createElement("a");
+          a.href = "#";
+          a.textContent = key.length > 32 ? key.slice(0, 29) + "..." : key;
           a.title = key;
           a.dataset.name = key;
-          a.addEventListener("click",(e)=>{
+          a.addEventListener("click", (e) => {
             e.preventDefault();
-            fetch(baseUrl+value.__file)
-              .then(res=>res.ok?res.text():Promise.reject())
-              .then(text=>{
-                if(window.Prism){
+            fetch(baseUrl + value.__file)
+              .then(res => res.ok ? res.text() : Promise.reject())
+              .then(text => {
+                if (window.Prism) {
                   contentEl.innerHTML = `<pre class='language-javascript'><code class='language-javascript'>${Prism.highlight(text, Prism.languages.javascript,'javascript')}</code></pre>`;
                 } else { contentEl.textContent = text; }
-              }).catch(()=>contentEl.textContent="Error loading file.");
-            if(selectedLi) selectedLi.classList.remove("selected");
+              }).catch(() => contentEl.textContent = "Error loading file.");
+            if (selectedLi) selectedLi.classList.remove("selected");
             li.classList.add("selected");
             selectedLi = li;
-            breadcrumbs.innerHTML = parentPath.concat(key).map((p,i,arr)=>{
-              if(i===arr.length-1) return `<span>${p}</span>`;
+            breadcrumbs.innerHTML = parentPath.concat(key).map((p, i, arr) => {
+              if (i === arr.length - 1) return `<span>${p}</span>`;
               return `<span>${p}</span> <span class='crumb-sep'>/</span>`;
             }).join("");
           });
           li.appendChild(a);
           parentUl.appendChild(li);
         } else {
-          const li=document.createElement("li");
+          // Folder
+          const li = document.createElement("li");
           li.classList.add("folder");
           li.dataset.name = key;
-          const label=document.createElement("span");
+          const label = document.createElement("span");
           label.textContent = key;
           label.classList.add("folder-label");
           label.dataset.name = key;
           li.appendChild(label);
 
-          const nestedUl=document.createElement("ul");
+          const nestedUl = document.createElement("ul");
           li.appendChild(nestedUl);
 
           const fullPath = parentPath.concat(key).join("/");
-          if(openFolders.has(fullPath)) {
+          if (openFolders.has(fullPath)) {
             li.classList.add("open");
             label.classList.add("open");
+            nestedUl.style.display = "block";
+            nestedUl.style.maxHeight = nestedUl.scrollHeight + "px";
           }
 
           label.addEventListener("click", () => {
             const isOpen = li.classList.toggle("open");
             label.classList.toggle("open", isOpen);
-            if(isOpen) openFolders.add(fullPath);
-            else openFolders.delete(fullPath);
+
+            if (nestedUl) {
+              if (isOpen) {
+                // Collapse siblings
+                const siblings = Array.from(li.parentNode.children).filter(
+                  sib => sib !== li && sib.classList.contains('folder')
+                );
+                siblings.forEach(sib => {
+                  sib.classList.remove('open');
+                  sib.querySelector('span.folder-label')?.classList.remove('open');
+                  const sibUl = sib.querySelector('ul');
+                  if (sibUl) sibUl.style.maxHeight = '0px';
+                  openFolders.delete(parentPath.concat(sib.dataset.name).join("/"));
+                });
+
+                // Expand this folder
+                nestedUl.style.display = "block";
+                const height = nestedUl.scrollHeight + "px";
+                nestedUl.style.maxHeight = "0px";
+                requestAnimationFrame(() => { nestedUl.style.maxHeight = height; });
+                openFolders.add(fullPath);
+              } else {
+                nestedUl.style.maxHeight = nestedUl.scrollHeight + "px";
+                requestAnimationFrame(() => { nestedUl.style.maxHeight = "0px"; });
+                openFolders.delete(fullPath);
+              }
+            }
           });
 
           parentUl.appendChild(li);
-          renderTree(value,nestedUl,parentPath.concat(key));
+          renderTree(value, nestedUl, parentPath.concat(key));
         }
       });
     }
 
-    function renderSidebar(filter=""){
-      listEl.innerHTML="";
-      const filteredScripts = filter ? scripts.filter(s=>s.toLowerCase().includes(filter.toLowerCase())) : scripts;
+    function renderSidebar(filter = "") {
+      listEl.innerHTML = "";
+      const filteredScripts = filter ? scripts.filter(s => s.toLowerCase().includes(filter.toLowerCase())) : scripts;
       const tree = buildTree(filteredScripts);
-      renderTree(tree,listEl);
+      renderTree(tree, listEl);
     }
 
     renderSidebar();
-    searchBar.addEventListener("input", e=>renderSidebar(e.target.value));
+    searchBar.addEventListener("input", e => renderSidebar(e.target.value));
   </script>
 </body>
 </html>
