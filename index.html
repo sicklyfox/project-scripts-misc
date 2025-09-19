@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Scripts Page</title>
+  <title>Scripts page</title>
   <link rel="stylesheet" href="style.css">
   <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
 </head>
@@ -11,7 +11,7 @@
   <div class="sidebar" id="sidebar">
     <button id="sidebar-toggle" aria-label="Toggle sidebar">⮞</button>
     <div class="sidebar-header">
-      <img src="assets/discord-icon-tbg.png" alt="Discord Server" class="server-icon">
+      <img src="assets/discord-icon-tbg.png" alt="Site Logo" class="site-logo">
     </div>
     <ul id="script-list" class="folder-tree"></ul>
     <div class="sidebar-footer">
@@ -132,31 +132,15 @@
           }
 
           label.addEventListener("click", () => {
-  const nestedUl = li.querySelector("ul");
-  const isOpen = li.classList.toggle("open");
-  label.classList.toggle("open", isOpen);
+            const isOpen = li.classList.toggle("open");
+            label.classList.toggle("open", isOpen);
 
-  if (nestedUl) {
-    if (isOpen) {
-      // Ensure the element is measured correctly
-      nestedUl.style.display = "block"; // temporarily show
-      const height = nestedUl.scrollHeight + "px";
-      nestedUl.style.maxHeight = "0px"; // reset
-      requestAnimationFrame(() => {
-        nestedUl.style.maxHeight = height; // expand
-      });
-      openFolders.add(fullPath);
-    } else {
-      nestedUl.style.maxHeight = nestedUl.scrollHeight + "px"; // start from current
-      requestAnimationFrame(() => {
-        nestedUl.style.maxHeight = "0px"; // collapse
-      });
-      openFolders.delete(fullPath);
-    }
-  }
-});
-
-
+            if (isOpen) {
+              openFolders.add(fullPath);
+            } else {
+              openFolders.delete(fullPath);
+            }
+          });
 
           parentUl.appendChild(li);
           renderTree(value,nestedUl,parentPath.concat(key));

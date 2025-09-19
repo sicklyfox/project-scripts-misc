@@ -53,7 +53,7 @@ body {
   margin-bottom: 12px;
 }
 
-.server-icon {
+.site-logo {
   width: 150px;
   height: 150px;
   object-fit: contain;
@@ -85,15 +85,14 @@ body {
   margin-top: 0;
   margin-bottom: 0;
   font-size: 1rem;
-  overflow: initial;
   height: fit-content;
 }
 
 /* Parent folder and file items */
 li.folder, li.file {
-  display: block;  /* vertical stacking */
-  position: relative;       /* for nested ul & tooltips */
-  padding: 4px 0 4px 4px;  /* reduced indentation */
+  display: block;
+  position: relative;
+  padding: 4px 0 4px 4px;
   margin: 0;
   height: fit-content;
   box-sizing: border-box;
@@ -105,8 +104,9 @@ li.folder, li.file {
   text-overflow: ellipsis;
 }
 
+/* 🚫 Removed hover highlight */
 li.folder:hover, li.file:hover {
-  background: #23272e;
+  background: none;
   cursor: pointer;
 }
 
@@ -135,14 +135,21 @@ li.folder:hover, li.file:hover {
   transform: rotate(90deg);
 }
 
-/* 🔥 Smooth expanding nested folders */
+/* 🔥 Smooth expanding nested folders (auto height) */
 li.folder > ul {
-  display: block;
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s ease;
+  overflow: hidden;
   padding-left: 8px;
-  height: fit-content;
-  max-height: 0;
-  overflow: scroll;
-  transition: max-height 0.3s ease; /* smooth expand/collapse */
+}
+
+li.folder.open > ul {
+  grid-template-rows: 1fr;
+}
+
+li.folder > ul > * {
+  min-height: 0;
 }
 
 /* Files inside folders */
@@ -152,7 +159,7 @@ li.file a {
   color: #e0e0e0;
   text-decoration: none;
   flex: 1;
-  overflow: scroll;
+  overflow: hidden;
   text-overflow: ellipsis;
 }
 
@@ -169,14 +176,6 @@ li.file a.selected {
   color: var(--accent2);
   border-radius: 4px;
 }
-li.file > ul {
-  display: block;
-  padding-left: 8px;
-  max-height: 0;
-  height: fit-content;
-  overflow: scroll;
-  transition: max-height 0.3s ease; /* smooth expand/collapse */
-}
 
 /* Breadcrumbs */
 .breadcrumbs { margin: 12px 0; font-size: 0.9rem; color: #bbb; }
@@ -188,7 +187,6 @@ li.file > ul {
   margin-top: auto;
   text-align: center;
   padding-top: 5px;
-
 }
 .discord-footer-icon {
   width: 64px;
@@ -249,7 +247,7 @@ pre[class*="language-"] {
 .sidebar.collapsed li.file a { font-size:0; position:relative; padding:6px; }
 .sidebar.collapsed li.file a::before { content:"•"; font-size:1.1rem; color:#e0e0e0; position:absolute; left:50%; transform:translateX(-50%); }
 .sidebar.collapsed li.file a.selected::before { color: var(--accent2); }
-.sidebar.collapsed .server-icon,.sidebar.collapsed .discord-footer-icon { width:42px; height:42px; margin:8px auto; }
+.sidebar.collapsed .site-logo,.sidebar.collapsed .discord-footer-icon { width:42px; height:42px; margin:8px auto; }
 
 /* Tooltips (frosted glass) */
 .sidebar.collapsed .folder-label, .sidebar.collapsed li.file a { position: relative; }
@@ -277,7 +275,7 @@ pre[class*="language-"] {
 
 /* Responsive */
 @media (max-width:700px){
-  .sidebar { width:100vw; height:1000p; position:static; border-right:none; border-bottom:2px solid var(--accent2); flex-direction:column; padding:8px 0; }
+  .sidebar { width:100vw; position:static; border-right:none; border-bottom:2px solid var(--accent2); flex-direction:column; padding:8px 0; }
   .sidebar-header { margin-bottom:0; flex:0 0 auto; }
   .folder-tree { font-size:0.95rem; margin-top:0; padding-left:4px; padding-right:4px; }
   .main-content { padding:8px 4vw; }
